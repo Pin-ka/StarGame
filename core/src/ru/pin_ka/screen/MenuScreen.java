@@ -25,9 +25,9 @@ public class MenuScreen extends Base2DScreen {
         super.show();
         background = new Texture("cookie.jpg");
         aim=new Texture("aim.png");
-        pos=new Vector2(0,0);
-        v=new Vector2(2,2);
-        tap=new Vector2(0,0);
+        pos=new Vector2(-0.67f,-0.5f);
+        v=new Vector2(0.001f,0.002f);
+        tap=new Vector2(-0.67f,-0.5f);
     }
 
     @Override
@@ -36,13 +36,13 @@ public class MenuScreen extends Base2DScreen {
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(background, -0.5f,-0.5f, 1f,1f);
-        batch.draw(aim,-0.5f,-0.5f,0.5f,0.5f);
+        batch.draw(background, -0.67f,-0.5f, 1.34f,1f);
+        batch.draw(aim,pos.x,pos.y,0.3f,0.3f);
         batch.end();
-        //if(count>0){
-            //pos.add(v);
-            //count--;
-        //}
+        if(count>0){
+            pos.add(v);
+            count--;
+        }
     }
 
     @Override
@@ -52,35 +52,29 @@ public class MenuScreen extends Base2DScreen {
         super.dispose();
     }
 
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println(screenX+" "+screenY);
-        tap.set(screenX-57,Gdx.graphics.getHeight()-screenY-95);
-        //так как картинка - стрелочка, то логичнее, если в цель придёт острие стрелочки.
-        count=div;
-        v=tap.cpy().sub(pos).nor().scl(tap.cpy().sub(pos).len()/div);
-        return super.touchDown(screenX, screenY, pointer, button);
-    }
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
-        System.out.println(touch.x+" "+touch.y);
+        tap.set(touch.x-0.11f,touch.y-0.19f);
+        //так как картинка - стрелочка, то логичнее, если в цель придёт острие стрелочки.
+        count=div;
+        v=tap.cpy().sub(pos).nor().scl(tap.cpy().sub(pos).len()/div);
         return super.touchDown(touch, pointer);
     }
 
     @Override
     public boolean keyDown(int keycode) {
         if (keycode==19){
-            tap.set(pos.x,Gdx.graphics.getHeight()-150);//чтобы картинка не выезжала за рамку
+            tap.set(pos.x,0.5f-0.3f);//чтобы картинка не выезжала за рамку
         }
         if (keycode==20){
-            tap.set(pos.x,0);
+            tap.set(pos.x,-0.5f);
         }
         if (keycode==21){
-            tap.set(0,pos.y);
+            tap.set(-0.67f,pos.y);
         }
         if (keycode==22){
-            tap.set(Gdx.graphics.getWidth()-150,pos.y);//чтобы картинка не выезжала за рамку
+            tap.set(1.34f-0.67f-0.3f,pos.y);//чтобы картинка не выезжала за рамку
         }
         count=div;
         v=tap.cpy().sub(pos).nor().scl(tap.cpy().sub(pos).len()/div);
