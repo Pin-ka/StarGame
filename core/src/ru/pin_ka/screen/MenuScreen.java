@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import ru.pin_ka.base.Base2DScreen;
 
 public class MenuScreen extends Base2DScreen {
-    SpriteBatch batch;
+
     Texture background;
     Texture aim;
 
@@ -23,7 +23,6 @@ public class MenuScreen extends Base2DScreen {
     @Override
     public void show() {
         super.show();
-        batch = new SpriteBatch();
         background = new Texture("cookie.jpg");
         aim=new Texture("aim.png");
         pos=new Vector2(0,0);
@@ -37,18 +36,17 @@ public class MenuScreen extends Base2DScreen {
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(background, 0, 0);
-        batch.draw(aim,pos.x,pos.y);
+        batch.draw(background, -0.5f,-0.5f, 1f,1f);
+        batch.draw(aim,-0.5f,-0.5f,0.5f,0.5f);
         batch.end();
-        if(count>0){
-            pos.add(v);
-            count--;
-        }
+        //if(count>0){
+            //pos.add(v);
+            //count--;
+        //}
     }
 
     @Override
     public void dispose() {
-        batch.dispose();
         background.dispose();
         aim.dispose();
         super.dispose();
@@ -56,11 +54,18 @@ public class MenuScreen extends Base2DScreen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        System.out.println(screenX+" "+screenY);
         tap.set(screenX-57,Gdx.graphics.getHeight()-screenY-95);
         //так как картинка - стрелочка, то логичнее, если в цель придёт острие стрелочки.
         count=div;
         v=tap.cpy().sub(pos).nor().scl(tap.cpy().sub(pos).len()/div);
         return super.touchDown(screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchDown(Vector2 touch, int pointer) {
+        System.out.println(touch.x+" "+touch.y);
+        return super.touchDown(touch, pointer);
     }
 
     @Override
