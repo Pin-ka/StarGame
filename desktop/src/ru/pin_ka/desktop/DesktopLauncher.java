@@ -8,6 +8,10 @@ import ru.pin_ka.Star2DGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		float acpect=3f/4f;
+		config.width=400;
+		config.height=(int)(config.width/acpect);
+		config.resizable=false;
 		new LwjglApplication(new Star2DGame(), config);
 	}
 }
