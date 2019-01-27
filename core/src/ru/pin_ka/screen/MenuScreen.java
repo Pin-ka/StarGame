@@ -3,81 +3,98 @@ package ru.pin_ka.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.pin_ka.base.Base2DScreen;
+import ru.pin_ka.math.Rect;
+import ru.pin_ka.sprite.Background;
+import ru.pin_ka.sprite.CandyBg;
+import ru.pin_ka.sprite.menu.Exit;
+import ru.pin_ka.sprite.menu.NameGame;
+import ru.pin_ka.sprite.menu.Play;
 
 public class MenuScreen extends Base2DScreen {
 
-    Texture background;
-    Texture aim;
-
-    Vector2 pos;
-    Vector2 tap;
-    Vector2 v;//вектор скорости
-
-    int count=0;//счетчик итераций темпа
-    int div=50;//темп движения картинки
+    private TextureAtlas atlas;
+    private Texture bg;
+    private Background background;
+    private CandyBg [] candyBg;
+    private Play play;
+    private Exit exit;
+    private NameGame nameGame;
 
     @Override
     public void show() {
         super.show();
-        background = new Texture("cookie.jpg");
-        aim=new Texture("aim.png");
-        pos=new Vector2(-0.67f,-0.5f);
-        v=new Vector2(0.001f,0.002f);
-        tap=new Vector2(-0.67f,-0.5f);
+        bg = new Texture("textures/bg.jpg");
+        background=new Background(new TextureRegion(bg));
+        atlas=new TextureAtlas("textures/menuAtlas.tpack");
+        candyBg=new CandyBg[25];
+        for (int i=0;i<candyBg.length;i++){
+            candyBg [i]=new CandyBg(atlas);
+        }
+        play=new Play(atlas);
+        exit=new Exit(atlas);
+        nameGame=new NameGame(atlas);
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
+        update(delta);
+        draw();
+    }
+
+    public void update(float delta){
+        for (int i=0;i<candyBg.length;i++){
+            candyBg[i].update(delta);
+        }
+    }
+
+    public void draw(){
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(background, -0.67f,-0.5f, 1.34f,1f);
-        batch.draw(aim,pos.x,pos.y,0.3f,0.3f);
-        batch.end();
-        if(count>0){
-            pos.add(v);
-            count--;
+        background.draw(batch);
+        for (int i=0;i<candyBg.length;i++){
+            candyBg[i].draw(batch);
         }
+        play.draw(batch);
+        exit.draw(batch);
+        nameGame.draw(batch);
+        batch.end();
+    }
+
+    @Override
+    public void resize(Rect worldBounds) {
+        background.resize(worldBounds);
+        for (int i=0;i<candyBg.length;i++){
+            candyBg[i].resize(worldBounds);
+        }
+        play.resize(worldBounds);
+        exit.resize(worldBounds);
+        nameGame.resize(worldBounds);
     }
 
     @Override
     public void dispose() {
-        background.dispose();
-        aim.dispose();
+        bg.dispose();
+        atlas.dispose();
         super.dispose();
     }
 
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
-        tap.set(touch.x-0.11f,touch.y-0.19f);
-        //так как картинка - стрелочка, то логичнее, если в цель придёт острие стрелочки.
-        count=div;
-        v=tap.cpy().sub(pos).nor().scl(tap.cpy().sub(pos).len()/div);
+
         return super.touchDown(touch, pointer);
     }
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode==19){
-            tap.set(pos.x,0.5f-0.3f);//чтобы картинка не выезжала за рамку
-        }
-        if (keycode==20){
-            tap.set(pos.x,-0.5f);
-        }
-        if (keycode==21){
-            tap.set(-0.67f,pos.y);
-        }
-        if (keycode==22){
-            tap.set(1.34f-0.67f-0.3f,pos.y);//чтобы картинка не выезжала за рамку
-        }
-        count=div;
-        v=tap.cpy().sub(pos).nor().scl(tap.cpy().sub(pos).len()/div);
+
         return super.keyDown(keycode);
     }
 }

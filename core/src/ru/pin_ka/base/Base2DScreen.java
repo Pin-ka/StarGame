@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import ru.pin_ka.math.MatrixUtils;
 import ru.pin_ka.math.Rect;
 
-public class Base2DScreen implements Screen, InputProcessor {
+public abstract class Base2DScreen implements Screen, InputProcessor {
     protected SpriteBatch batch;
     private Rect screenBounds;
     private Rect worldBounds;
@@ -52,6 +52,11 @@ public class Base2DScreen implements Screen, InputProcessor {
         MatrixUtils.calcTransitionMatrix(worldToGl,worldBounds,glBounds);
         batch.setProjectionMatrix(worldToGl);
         MatrixUtils.calcTransitionMatrix(screenToWorlds,screenBounds,worldBounds);
+
+        resize(worldBounds);
+    }
+
+    public void resize (Rect worldBounds){
     }
 
     @Override
