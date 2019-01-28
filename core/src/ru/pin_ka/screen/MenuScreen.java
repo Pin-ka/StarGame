@@ -1,5 +1,6 @@
 package ru.pin_ka.screen;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,19 +12,25 @@ import ru.pin_ka.base.Base2DScreen;
 import ru.pin_ka.math.Rect;
 import ru.pin_ka.sprite.Background;
 import ru.pin_ka.sprite.CandyBg;
-import ru.pin_ka.sprite.menu.Exit;
+import ru.pin_ka.sprite.menu.ButtonExit;
 import ru.pin_ka.sprite.menu.NameGame;
-import ru.pin_ka.sprite.menu.Play;
+import ru.pin_ka.sprite.menu.ButtonPlay;
 
 public class MenuScreen extends Base2DScreen {
+
+    private Game game;
 
     private TextureAtlas atlas;
     private Texture bg;
     private Background background;
     private CandyBg [] candyBg;
-    private Play play;
-    private Exit exit;
+    private ButtonPlay play;
+    private ButtonExit exit;
     private NameGame nameGame;
+
+    public MenuScreen(Game game) {
+        this.game = game;
+    }
 
     @Override
     public void show() {
@@ -35,8 +42,8 @@ public class MenuScreen extends Base2DScreen {
         for (int i=0;i<candyBg.length;i++){
             candyBg [i]=new CandyBg(atlas);
         }
-        play=new Play(atlas);
-        exit=new Exit(atlas);
+        play=new ButtonPlay(atlas,game);
+        exit=new ButtonExit(atlas);
         nameGame=new NameGame(atlas);
     }
 
@@ -88,8 +95,16 @@ public class MenuScreen extends Base2DScreen {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
-
+        exit.touchDown(touch,pointer);
+        play.touchDown(touch,pointer);
         return super.touchDown(touch, pointer);
+    }
+
+    @Override
+    public boolean touchUp(Vector2 touch, int pointer) {
+        exit.touchUp(touch,pointer);
+        play.touchUp(touch,pointer);
+        return super.touchUp(touch, pointer);
     }
 
     @Override

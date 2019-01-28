@@ -7,7 +7,7 @@ import ru.pin_ka.base.Sprite;
 
 public abstract class ScaledTouchUpButton extends Sprite {
 
-    private static final float PRESS_SCALE=0.5f;
+    private static final float PRESS_SCALE=0.9f;
 
     private int pointer;
     private boolean isPressed;

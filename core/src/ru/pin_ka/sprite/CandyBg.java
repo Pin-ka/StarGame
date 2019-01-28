@@ -20,7 +20,7 @@ public class CandyBg extends Sprite {
 
 
         setHeightProportion(0.04f);
-        v.set((random.nextFloat()*(0.005f-(-0.005f))+(-0.005f)),(random.nextFloat()*(-0.1f-(-0.5f))+(-0.5f)));
+        v.set((random.nextFloat()*(0.005f-(-0.005f))+(-0.005f)),(random.nextFloat()*(-0.1f-(-0.3f))+(-0.3f)));
 
     }
 
