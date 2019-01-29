@@ -1,0 +1,54 @@
+
+mainAtlas.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ship
+  rotate: false
+  xy: 0, 491
+  size: 608, 512
+  orig: 608, 512
+  offset: 0, 0
+  index: -1
+expCake
+  rotate: false
+  xy: 0, 265
+  size: 548, 224
+  orig: 548, 224
+  offset: 0, 0
+  index: -1
+texts
+  rotate: false
+  xy: 0, 112
+  size: 801, 151
+  orig: 801, 151
+  offset: 0, 0
+  index: -1
+gameOver
+  rotate: false
+  xy: 610, 877
+  size: 382, 126
+  orig: 382, 126
+  offset: 0, 0
+  index: -1
+newGame
+  rotate: false
+  xy: 610, 738
+  size: 367, 137
+  orig: 367, 137
+  offset: 0, 0
+  index: -1
+candies
+  rotate: false
+  xy: 0, 0
+  size: 150, 110
+  orig: 150, 110
+  offset: 0, 0
+  index: -1
+bullet
+  rotate: false
+  xy: 550, 472
+  size: 18, 17
+  orig: 18, 17
+  offset: 0, 0
+  index: -1

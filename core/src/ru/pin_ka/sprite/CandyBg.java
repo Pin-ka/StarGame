@@ -16,10 +16,10 @@ public class CandyBg extends Sprite {
     private Random random=new Random();
 
     public CandyBg(TextureAtlas atlas) {
-        super(atlas.findRegion("bg1"));
+        super(atlas.findRegion("candies"),2,3,6);
+        frame=random.nextInt(6);
 
-
-        setHeightProportion(0.04f);
+        setHeightProportion(0.07f);
         v.set((random.nextFloat()*(0.005f-(-0.005f))+(-0.005f)),(random.nextFloat()*(-0.1f-(-0.3f))+(-0.3f)));
 
     }

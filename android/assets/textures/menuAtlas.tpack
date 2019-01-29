@@ -3,66 +3,31 @@ menuAtlas.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+title
+  rotate: false
+  xy: 1, 32
+  size: 607, 441
+  orig: 607, 441
+  offset: 0, 0
+  index: -1
 exit
   rotate: false
-  xy: 1, 1
+  xy: 610, 238
   size: 235, 235
   orig: 235, 235
   offset: 0, 0
   index: -1
 play
   rotate: false
-  xy: 238, 1
+  xy: 610, 1
   size: 235, 235
   orig: 235, 235
   offset: 0, 0
   index: -1
-title
+candies
   rotate: false
-  xy: 475, 123
-  size: 133, 113
-  orig: 133, 113
-  offset: 0, 0
-  index: -1
-bg6
-  rotate: false
-  xy: 475, 72
-  size: 41, 49
-  orig: 41, 49
-  offset: 0, 0
-  index: -1
-bg4
-  rotate: false
-  xy: 610, 190
-  size: 35, 46
-  orig: 35, 46
-  offset: 0, 0
-  index: -1
-bg2
-  rotate: false
-  xy: 475, 28
-  size: 32, 42
-  orig: 32, 42
-  offset: 0, 0
-  index: -1
-bg3
-  rotate: false
-  xy: 518, 86
-  size: 37, 35
-  orig: 37, 35
-  offset: 0, 0
-  index: -1
-bg5
-  rotate: false
-  xy: 647, 201
-  size: 36, 35
-  orig: 36, 35
-  offset: 0, 0
-  index: -1
-bg1
-  rotate: false
-  xy: 610, 154
-  size: 34, 34
-  orig: 34, 34
+  xy: 847, 363
+  size: 150, 110
+  orig: 150, 110
   offset: 0, 0
   index: -1

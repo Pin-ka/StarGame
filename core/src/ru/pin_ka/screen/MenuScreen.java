@@ -38,7 +38,7 @@ public class MenuScreen extends Base2DScreen {
         bg = new Texture("textures/bg.jpg");
         background=new Background(new TextureRegion(bg));
         atlas=new TextureAtlas("textures/menuAtlas.tpack");
-        candyBg=new CandyBg[25];
+        candyBg=new CandyBg[50];
         for (int i=0;i<candyBg.length;i++){
             candyBg [i]=new CandyBg(atlas);
         }
