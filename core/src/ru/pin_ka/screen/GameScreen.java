@@ -1,6 +1,5 @@
 package ru.pin_ka.screen;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,47 +9,39 @@ import com.badlogic.gdx.math.Vector2;
 
 import ru.pin_ka.base.Base2DScreen;
 import ru.pin_ka.math.Rect;
+import ru.pin_ka.pool.BulletPool;
 import ru.pin_ka.sprite.Background;
 import ru.pin_ka.sprite.CandyBg;
-import ru.pin_ka.sprite.menu.ButtonExit;
-import ru.pin_ka.sprite.menu.NameGame;
-import ru.pin_ka.sprite.menu.ButtonPlay;
+import ru.pin_ka.sprite.game.Ship;
 
-public class MenuScreen extends Base2DScreen {
-
-    private Game game;
-
+public class GameScreen extends Base2DScreen {
     private TextureAtlas atlas;
     private Texture bg;
     private Background background;
-    private CandyBg [] candyBg;
-    private ButtonPlay play;
-    private ButtonExit exit;
-    private NameGame nameGame;
+    private CandyBg[] candyBg;
+    private Ship ship;
 
-    public MenuScreen(Game game) {
-        this.game = game;
-    }
+    private BulletPool bulletPool;
 
     @Override
     public void show() {
         super.show();
         bg = new Texture("textures/bg.jpg");
         background=new Background(new TextureRegion(bg));
-        atlas=new TextureAtlas("textures/menuAtlas.tpack");
-        candyBg=new CandyBg[50];
+        atlas=new TextureAtlas("textures/mainAtlas.tpack");
+        candyBg=new CandyBg[25];
         for (int i=0;i<candyBg.length;i++){
             candyBg [i]=new CandyBg(atlas);
         }
-        play=new ButtonPlay(atlas,game);
-        exit=new ButtonExit(atlas);
-        nameGame=new NameGame(atlas);
+        bulletPool=new BulletPool();
+        ship=new Ship(atlas,bulletPool);
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
         update(delta);
+        deleteAllDestroyed();
         draw();
     }
 
@@ -58,6 +49,12 @@ public class MenuScreen extends Base2DScreen {
         for (int i=0;i<candyBg.length;i++){
             candyBg[i].update(delta);
         }
+        ship.update(delta);
+        bulletPool.updateActiveSprites(delta);
+    }
+
+    public void deleteAllDestroyed(){
+        bulletPool.freeAllDestruyedActiveSprites();
     }
 
     public void draw(){
@@ -68,48 +65,50 @@ public class MenuScreen extends Base2DScreen {
         for (int i=0;i<candyBg.length;i++){
             candyBg[i].draw(batch);
         }
-        play.draw(batch);
-        exit.draw(batch);
-        nameGame.draw(batch);
+        ship.draw(batch);
+        bulletPool.drawActiveSprites(batch);
         batch.end();
     }
 
     @Override
     public void resize(Rect worldBounds) {
+        super.resize(worldBounds);
         background.resize(worldBounds);
         for (int i=0;i<candyBg.length;i++){
             candyBg[i].resize(worldBounds);
         }
-        play.resize(worldBounds);
-        exit.resize(worldBounds);
-        nameGame.resize(worldBounds);
+        ship.resize(worldBounds);
     }
 
     @Override
     public void dispose() {
         bg.dispose();
         atlas.dispose();
+        bulletPool.dispose();
         super.dispose();
     }
 
+    @Override
+    public boolean keyDown(int keycode) {
+        ship.keyDown(keycode);
+        return super.keyDown(keycode);
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        ship.keyUp(keycode);
+        return super.keyUp(keycode);
+    }
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
-        exit.touchDown(touch,pointer);
-        play.touchDown(touch,pointer);
+        ship.touchDown(touch,pointer);
         return super.touchDown(touch, pointer);
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer) {
-        exit.touchUp(touch,pointer);
-        play.touchUp(touch,pointer);
+        ship.touchUp(touch,pointer);
         return super.touchUp(touch, pointer);
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-
-        return super.keyDown(keycode);
     }
 }
