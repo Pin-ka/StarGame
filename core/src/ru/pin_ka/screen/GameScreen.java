@@ -1,6 +1,7 @@
 package ru.pin_ka.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -23,9 +24,15 @@ public class GameScreen extends Base2DScreen {
 
     private BulletPool bulletPool;
 
+    private Music music;
+
     @Override
     public void show() {
         super.show();
+        music=Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
+        music.setLooping(true);
+        music.play();
+        music.setVolume(0.5f);
         bg = new Texture("textures/bg.jpg");
         background=new Background(new TextureRegion(bg));
         atlas=new TextureAtlas("textures/mainAtlas.tpack");
@@ -86,6 +93,7 @@ public class GameScreen extends Base2DScreen {
         atlas.dispose();
         bulletPool.dispose();
         super.dispose();
+        ship.dispose();
     }
 
     @Override

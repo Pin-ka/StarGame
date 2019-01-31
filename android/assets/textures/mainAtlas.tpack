@@ -1,53 +1,67 @@
 
 mainAtlas.png
 format: RGBA8888
-filter: Nearest,Nearest
+filter: Linear,Nearest
 repeat: none
+expShip
+  rotate: false
+  xy: 1, 999
+  size: 2048, 1024
+  orig: 2048, 1024
+  offset: 0, 0
+  index: -1
+cakies
+  rotate: false
+  xy: 1, 266
+  size: 1175, 731
+  orig: 1175, 731
+  offset: 0, 0
+  index: -1
 ship
   rotate: false
-  xy: 0, 491
+  xy: 2051, 1511
   size: 608, 512
   orig: 608, 512
   offset: 0, 0
   index: -1
-expCake
-  rotate: false
-  xy: 0, 265
-  size: 548, 224
-  orig: 548, 224
-  offset: 0, 0
-  index: -1
 texts
   rotate: false
-  xy: 0, 112
+  xy: 1, 113
   size: 801, 151
   orig: 801, 151
   offset: 0, 0
   index: -1
+expCake
+  rotate: false
+  xy: 1178, 773
+  size: 548, 224
+  orig: 548, 224
+  offset: 0, 0
+  index: -1
 gameOver
   rotate: false
-  xy: 610, 877
+  xy: 2051, 1383
   size: 382, 126
   orig: 382, 126
   offset: 0, 0
   index: -1
 newGame
   rotate: false
-  xy: 610, 738
+  xy: 2661, 1886
   size: 367, 137
   orig: 367, 137
   offset: 0, 0
   index: -1
 candies
   rotate: false
-  xy: 0, 0
+  xy: 1, 1
   size: 150, 110
   orig: 150, 110
   offset: 0, 0
   index: -1
 bullet
   rotate: false
-  xy: 550, 472
+  xy: 804, 247
   size: 18, 17
   orig: 18, 17
   offset: 0, 0
