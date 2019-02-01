@@ -1,7 +1,7 @@
 
 mainAtlas.png
 format: RGBA8888
-filter: Linear,Nearest
+filter: Nearest,Nearest
 repeat: none
 expShip
   rotate: false
@@ -33,9 +33,9 @@ texts
   index: -1
 expCake
   rotate: false
-  xy: 1178, 773
-  size: 548, 224
-  orig: 548, 224
+  xy: 1178, 837
+  size: 431, 160
+  orig: 431, 160
   offset: 0, 0
   index: -1
 gameOver
@@ -59,9 +59,16 @@ candies
   orig: 150, 110
   offset: 0, 0
   index: -1
+ink
+  rotate: false
+  xy: 804, 161
+  size: 52, 103
+  orig: 52, 103
+  offset: 0, 0
+  index: -1
 bullet
   rotate: false
-  xy: 804, 247
+  xy: 1178, 818
   size: 18, 17
   orig: 18, 17
   offset: 0, 0
