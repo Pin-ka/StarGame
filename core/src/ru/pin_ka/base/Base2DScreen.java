@@ -14,7 +14,7 @@ import ru.pin_ka.math.Rect;
 public abstract class Base2DScreen implements Screen, InputProcessor {
     protected SpriteBatch batch;
     private Rect screenBounds;
-    private Rect worldBounds;
+    protected Rect worldBounds;
     private Rect glBounds;
 
     private Matrix4 worldToGl;

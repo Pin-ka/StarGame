@@ -4,61 +4,55 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-
-import ru.pin_ka.base.Sprite;
 import ru.pin_ka.math.Rect;
 import ru.pin_ka.pool.BulletPool;
 
-public class Ship extends Sprite {
+public class Ship extends BaseShip {
 
     static final int INVALID_POINTER=-1;
 
-    private Vector2 v= new Vector2();
     private Vector2 v0=new Vector2(0.2f,0);
     private boolean isPressedLeft;
     private boolean isPressedRight;
-    private BulletPool bulletPool;
-    private TextureRegion bulletRegion;
-    private  Rect worldBounds;
-    private int rightPoiner;
-    private int leftPointer;
-    private float reloadInterval;
-    private float reloadTimer;
-    private Sound shootSound;
+    private int leftPointer = INVALID_POINTER;
+    private int rightPointer = INVALID_POINTER;
+
 
     public Ship(TextureAtlas atlas,BulletPool bulletPool) {
         super(atlas.findRegion("ship"),1,2,2);
         this.bulletRegion=atlas.findRegion("bullet");
+        this.bulletPool = bulletPool;
+        this.reloadInterval = 0.2f;
+        this.shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shlep.wav"));
         setHeightProportion(0.15f);
-        this.bulletPool=bulletPool;
-        this.reloadInterval=0.2f;
-        this.shootSound=Gdx.audio.newSound(Gdx.files.internal("sounds/shlep.wav"));
+        this.bulletV = new Vector2(0, 0.5f);
+        this.bulletHeight = 0.01f;
+        this.damage = 1;
+        this.hp = 100;
     }
 
     @Override
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
-        this.worldBounds=worldBounds;
         setBottom(worldBounds.getBottom()+0.01f);
     }
 
     @Override
     public void update(float delta) {
         super.update(delta);
-        pos.mulAdd(v,delta);
-        reloadTimer+=delta;
-        if(reloadTimer>=reloadInterval){
-            reloadTimer=0f;
+        pos.mulAdd(v, delta);
+        reloadTimer += delta;
+        if (reloadTimer >= reloadInterval) {
+            reloadTimer = 0f;
             shoot();
         }
-        if (getLeft()<worldBounds.getLeft()){
-            setLeft(worldBounds.getLeft());
-            stop();
-        }
-        if (getRight()>worldBounds.getRight()){
+        if (getRight() > worldBounds.getRight()) {
             setRight(worldBounds.getRight());
+           stop();
+        }
+        if (getLeft() < worldBounds.getLeft()) {
+            setLeft(worldBounds.getLeft());
             stop();
         }
     }
@@ -113,8 +107,8 @@ public class Ship extends Sprite {
             leftPointer=pointer;
             moveLeft();
         }else {
-            if (rightPoiner!=INVALID_POINTER) return false;
-            rightPoiner=pointer;
+            if (rightPointer!=INVALID_POINTER) return false;
+            rightPointer=pointer;
             moveRight();
         }
         return super.touchDown(touch, pointer);
@@ -124,14 +118,14 @@ public class Ship extends Sprite {
     public boolean touchUp(Vector2 touch, int pointer) {
         if (pointer==leftPointer){
             leftPointer=INVALID_POINTER;
-            if (rightPoiner!=INVALID_POINTER){
+            if (rightPointer!=INVALID_POINTER){
                 moveRight();
             }else {
                 stop();
             }
         }
-        if (pointer==rightPoiner){
-            rightPoiner=INVALID_POINTER;
+        if (pointer==rightPointer){
+            rightPointer=INVALID_POINTER;
             if(leftPointer!=INVALID_POINTER){
                 moveLeft();
             }else {
@@ -153,21 +147,4 @@ public class Ship extends Sprite {
     private void stop(){
         v.setZero();
     }
-
-    private void shoot(){
-        shootSound.play();
-        Bullet bullet=bulletPool.obtain();
-        bullet.set(this,
-                bulletRegion,
-                pos,
-                new Vector2(0,0.5f),
-                0.02f,
-                worldBounds,
-                1);
-    }
-
-    public void dispose(){
-        shootSound.dispose();
-    }
-
 }
