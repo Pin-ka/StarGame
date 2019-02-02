@@ -19,6 +19,7 @@ public class SweetGoalEmitter {
     private static final float  GOAL_SMALL_RELOAD_INTERVAL=3f;
     private static final int  GOAL_SMALL_HP=1;
     private TextureRegion[] goalSmallRegion;
+    private TextureRegion oneGoal;
     private TextureRegion bulletRegion;
 
     private Random random=new Random();
@@ -39,6 +40,8 @@ public class SweetGoalEmitter {
         this.goalSmallRegion=Regions.split(textureRegion,3,4,11);
         this.bulletRegion=atlas.findRegion("ink");
         this.worldBounds=worldBounds;
+        this.oneGoal=goalSmallRegion[3];
+
     }
 
     public void generate (float delta){
@@ -47,7 +50,7 @@ public class SweetGoalEmitter {
             generateTimer=0f;
             SweetGoal sweetGoal=sweetGoalPool.obtain();
             sweetGoal.set(
-                    goalSmallRegion,
+                    oneGoal,
                     goalSmallV,
                     bulletRegion,
                     GOAL_SMALL_BULLET_HEIGHT,
@@ -55,7 +58,8 @@ public class SweetGoalEmitter {
                     GOAL_SMALL_DAMAGE,
                     GOAL_SMALL_RELOAD_INTERVAL,
                     GOAL_SMALL_HEIGHT,
-                    GOAL_SMALL_HP
+                    GOAL_SMALL_HP,
+                    worldBounds
             );
 
             sweetGoal.pos.x = random.nextFloat()*((worldBounds.getRight() - sweetGoal.getHalfWidth() - worldBounds.getLeft() + sweetGoal.getHalfWidth()) + worldBounds.getLeft() + sweetGoal.getHalfWidth());

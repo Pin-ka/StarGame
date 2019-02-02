@@ -1,9 +1,11 @@
 package ru.pin_ka.sprite.game;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
+import ru.pin_ka.math.Rect;
 import ru.pin_ka.pool.BulletPool;
 
 public class SweetGoal extends BaseShip {
@@ -18,8 +20,9 @@ public class SweetGoal extends BaseShip {
         this.bulletV = new Vector2();
     }
 
+
     public void set(
-        TextureRegion [] regions,
+        TextureRegion region,
         Vector2 v0,
         TextureRegion bulletRegion,
         float bulletHeidht,
@@ -27,9 +30,10 @@ public class SweetGoal extends BaseShip {
         int bulletDamage,
         float realoadInterval,
         float height,
-        int hp
+        int hp,
+        Rect worldBounds
     ){
-        this.regions=regions;
+        this.regions[0]=region;
         this.v0.set(v0);
         this.bulletRegion=bulletRegion;
         this.bulletHeight=bulletHeidht;
@@ -40,11 +44,16 @@ public class SweetGoal extends BaseShip {
         this.hp=hp;
         reloadTimer=realoadInterval;//чтобы сразу стрелял
         v.set(v0);
+        this.worldBounds=worldBounds;
     }
 
     @Override
     public void update(float delta) {
         super.update(delta);
         this.pos.mulAdd(v,delta);
+        if (isOutside(worldBounds)) {
+            destroy();
+        }
+
     }
 }

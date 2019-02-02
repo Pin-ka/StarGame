@@ -28,6 +28,7 @@ public class BaseShip extends Sprite {
 
         protected int hp;
 
+
         public BaseShip() {
             super();
         }
