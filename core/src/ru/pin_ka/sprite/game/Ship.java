@@ -2,7 +2,6 @@ package ru.pin_ka.sprite.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import ru.pin_ka.math.Rect;
@@ -37,6 +36,7 @@ public class Ship extends BaseShip {
         super.resize(worldBounds);
         setBottom(worldBounds.getBottom()+0.01f);
     }
+
 
     @Override
     public void update(float delta) {

@@ -10,13 +10,16 @@ import com.badlogic.gdx.math.Vector2;
 
 import ru.pin_ka.base.Base2DScreen;
 import ru.pin_ka.math.Rect;
+import ru.pin_ka.pool.AnswersPool;
 import ru.pin_ka.pool.BulletPool;
 import ru.pin_ka.pool.ExplosionPool;
 import ru.pin_ka.pool.SweetGoalPool;
 import ru.pin_ka.sprite.Background;
 import ru.pin_ka.sprite.CandyBg;
+import ru.pin_ka.sprite.game.Answers;
 import ru.pin_ka.sprite.game.ExplosionCake;
 import ru.pin_ka.sprite.game.Ship;
+import ru.pin_ka.utils.AnswersBuilding;
 import ru.pin_ka.utils.SweetGoalEmitter;
 
 public class GameScreen extends Base2DScreen {
@@ -27,15 +30,12 @@ public class GameScreen extends Base2DScreen {
         private Background background;
         private CandyBg candyBg[];
         private Ship ship;
-
         private BulletPool bulletPool;
         private ExplosionPool explosionPool;
-
         private SweetGoalPool sweetGoalPool;
-
         private SweetGoalEmitter sweetGoalEmitter;
-
-
+        private AnswersPool answersPool;
+        private AnswersBuilding answers;
         private Music music;
 
         @Override
@@ -54,10 +54,11 @@ public class GameScreen extends Base2DScreen {
             }
             bulletPool = new BulletPool();
             explosionPool = new ExplosionPool(atlas);
-            sweetGoalPool=new SweetGoalPool(bulletPool);
+            sweetGoalPool=new SweetGoalPool(atlas);
             ship = new Ship(atlas, bulletPool);
-            sweetGoalEmitter=new SweetGoalEmitter(sweetGoalPool,atlas,worldBounds);
-
+            sweetGoalEmitter=new SweetGoalEmitter(worldBounds);
+            answersPool=new AnswersPool(atlas);
+            answers=new AnswersBuilding(worldBounds);
         }
 
         @Override
@@ -76,15 +77,16 @@ public class GameScreen extends Base2DScreen {
             bulletPool.updateActiveSprites(delta);
             explosionPool.updateActiveSprites(delta);
             sweetGoalPool.updateActiveSprites(delta);
-            sweetGoalEmitter.generate(delta);
-
+            sweetGoalEmitter.generate(sweetGoalPool);
+            answers.buildAnswer(sweetGoalEmitter.getCurrentFrame(),answersPool,sweetGoalEmitter.isChange());
+            answersPool.updateActiveSprites(delta);
         }
 
         public void deleteAllDestroyed() {
             bulletPool.freeAllDestroyedActiveSprites();
             explosionPool.freeAllDestroyedActiveSprites();
             sweetGoalPool.freeAllDestroyedActiveSprites();
-
+            answersPool.freeAllDestroyedActiveSprites();
         }
 
         public void draw() {
@@ -96,6 +98,7 @@ public class GameScreen extends Base2DScreen {
                 candyBg[i].draw(batch);
             }
             ship.draw(batch);
+            answersPool.drawActiveSprites(batch);
             bulletPool.drawActiveSprites(batch);
             explosionPool.drawActiveSprites(batch);
             sweetGoalPool.drawActiveSprites(batch);
@@ -118,21 +121,21 @@ public class GameScreen extends Base2DScreen {
             atlas.dispose();
             bulletPool.dispose();
             explosionPool.dispose();
-            sweetGoalPool.dispose();
             ship.dispose();
             music.dispose();
+            answersPool.dispose();
             super.dispose();
         }
 
         @Override
         public boolean keyDown(int keycode) {
-            ship.keyDown(keycode);
+                ship.keyDown(keycode);
             return super.keyDown(keycode);
         }
 
         @Override
         public boolean keyUp(int keycode) {
-            ship.keyUp(keycode);
+                ship.keyUp(keycode);
             return super.keyUp(keycode);
         }
 
@@ -140,13 +143,15 @@ public class GameScreen extends Base2DScreen {
         public boolean touchDown(Vector2 touch, int pointer) {
             ExplosionCake explosion = explosionPool.obtain();
             explosion.set(0.15f, touch);
-            ship.touchDown(touch, pointer);
+                ship.touchDown(touch, pointer);
+            answers.touchDown(touch, pointer);
             return super.touchDown(touch, pointer);
         }
 
         @Override
         public boolean touchUp(Vector2 touch, int pointer) {
-            ship.touchUp(touch, pointer);
+                ship.touchUp(touch, pointer);
+            answers.touchUp(touch,pointer);
             return super.touchUp(touch, pointer);
         }
     }

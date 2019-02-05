@@ -1,48 +1,28 @@
 package ru.pin_ka.sprite.game;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-
 import ru.pin_ka.math.Rect;
-import ru.pin_ka.pool.BulletPool;
 
 public class SweetGoal extends BaseShip {
 
     private Vector2 v0=new Vector2();
 
-    public SweetGoal(Sound shootSound, BulletPool bulletPool) {
-        super();
-        this.shootSound=shootSound;
+    public SweetGoal(TextureAtlas atlas) {
+        super(atlas.findRegion("cakies"),3,4,11);
         this.v.set(v0);
-        this.bulletPool=bulletPool;
-        this.bulletV = new Vector2();
+        setHeightProportion(0.15f);
     }
 
-
     public void set(
-        TextureRegion region,
+        int frame,
         Vector2 v0,
-        TextureRegion bulletRegion,
-        float bulletHeidht,
-        float bulletVy,
-        int bulletDamage,
-        float realoadInterval,
-        float height,
         int hp,
         Rect worldBounds
     ){
-        this.regions[0]=region;
+        this.frame=frame;
         this.v0.set(v0);
-        this.bulletRegion=bulletRegion;
-        this.bulletHeight=bulletHeidht;
-        this.bulletV.set(0,bulletVy);
-        this.damage=bulletDamage;
-        this.reloadInterval=realoadInterval;
-        setHeightProportion(height);
         this.hp=hp;
-        reloadTimer=realoadInterval;//чтобы сразу стрелял
         v.set(v0);
         this.worldBounds=worldBounds;
     }
@@ -54,6 +34,5 @@ public class SweetGoal extends BaseShip {
         if (isOutside(worldBounds)) {
             destroy();
         }
-
     }
 }

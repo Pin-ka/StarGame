@@ -19,7 +19,7 @@ public class CandyBg extends Sprite {
         super(atlas.findRegion("candies"),2,3,6);
         frame=random.nextInt(6);
 
-        setHeightProportion(0.07f);
+        setHeightProportion(0.05f);
         v.set((random.nextFloat()*(0.005f-(-0.005f))+(-0.005f)),(random.nextFloat()*(-0.1f-(-0.3f))+(-0.3f)));
 
     }

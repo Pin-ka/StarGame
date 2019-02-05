@@ -1,30 +1,20 @@
 package ru.pin_ka.pool;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
-
-import ru.pin_ka.base.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import ru.pin_ka.base.SpritesPool;
 import ru.pin_ka.sprite.game.SweetGoal;
 
 public class SweetGoalPool extends SpritesPool <SweetGoal> {
 
-    private Sound shootSound;
-    private BulletPool bulletPool;
+    private TextureAtlas atlas;
 
-    public SweetGoalPool(BulletPool bulletPool) {
-        this.shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/kap.wav"));
-        this.bulletPool=bulletPool;
+    public SweetGoalPool(TextureAtlas atlas) {
+        this.atlas=atlas;
     }
 
     @Override
     protected SweetGoal newObject() {
-        return new SweetGoal(shootSound, bulletPool);
+        return new SweetGoal(atlas);
     }
 
-    @Override
-    public void dispose() {
-        super.dispose();
-        shootSound.dispose();
-    }
 }

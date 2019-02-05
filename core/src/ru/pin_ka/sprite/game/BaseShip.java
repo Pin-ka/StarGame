@@ -11,21 +11,15 @@ import ru.pin_ka.pool.BulletPool;
 public class BaseShip extends Sprite {
 
         protected Rect worldBounds;
-
         protected Vector2 v = new Vector2();
-
         protected BulletPool bulletPool;
         protected TextureRegion bulletRegion;
-
         protected float reloadInterval;
         protected float reloadTimer;
-
         protected Sound shootSound;
-
         protected Vector2 bulletV;
         protected float bulletHeight;
         protected int damage;
-
         protected int hp;
 
 
