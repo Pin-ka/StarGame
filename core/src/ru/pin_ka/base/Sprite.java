@@ -62,7 +62,7 @@ public class Sprite extends Rect {
         return false;
     }
 
-    public boolean touchUp (Vector2 touch,int poiter){
+    public boolean touchUp (Vector2 touch,int pointer){
         return  false;
     }
 
