@@ -16,24 +16,23 @@ public class AnswersBuilding {
     ArrayList <Integer> frames =new ArrayList(NUMBERS_OF_ANSWERS);
     ArrayList <Answers> answers=new ArrayList<Answers>(NUMBERS_OF_ANSWERS);
     private Random random=new Random();
-    int currentFrame;
-
+    private int currentFrame;
+    private boolean isTrueAnswer;
 
     public AnswersBuilding(Rect worldBounds) {
         this.worldBounds=worldBounds;
     }
 
     public void buildAnswer(int frame, AnswersPool answersPool,boolean isChange){
-
         this.currentFrame=frame;
         if (isChange) {
+            isTrueAnswer=false;
             if (answers.size()!=0){
                 for (int i=0;i<NUMBERS_OF_ANSWERS;i++){
                     answers.get(i).destroy();
                 }
             }
             answers.clear();
-
             buildFrames(frame);
             for(int i=0;i<NUMBERS_OF_ANSWERS;i++) {
                 Answers answer = answersPool.obtain();
@@ -67,6 +66,7 @@ public class AnswersBuilding {
         }
     }
 
+
     public boolean touchDown(Vector2 touch, int pointer) {
             for (int i = 0; i < NUMBERS_OF_ANSWERS; i++) {
                 answers.get(i).touchDown(touch, pointer);
@@ -77,9 +77,26 @@ public class AnswersBuilding {
     public boolean touchUp(Vector2 touch, int pointer) {
             for (int i = 0; i < NUMBERS_OF_ANSWERS; i++) {
                 answers.get(i).touchUp(touch, pointer, currentFrame);
-        }
-
-        return false;
+                if(answers.get(i).getPressedFrame()==currentFrame){
+                    isTrueAnswer=true;
+                }
+            }
+            return false;
     }
 
+    public void setBlocked(boolean isBlocked){
+        for (int i = 0; i < NUMBERS_OF_ANSWERS; i++) {
+            answers.get(i).setBlocked(isBlocked);
+        }
+    }
+
+    public boolean isTrueAnsver() {
+        return isTrueAnswer;
+    }
+
+    public void dispose() {
+        for (int i = 0; i < NUMBERS_OF_ANSWERS; i++) {
+            answers.get(i).dispose();
+        }
+    }
 }

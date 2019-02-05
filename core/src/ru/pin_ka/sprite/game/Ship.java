@@ -16,6 +16,7 @@ public class Ship extends BaseShip {
     private boolean isPressedRight;
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
+    private boolean isBlocked=true;
 
 
     public Ship(TextureAtlas atlas,BulletPool bulletPool) {
@@ -43,7 +44,7 @@ public class Ship extends BaseShip {
         super.update(delta);
         pos.mulAdd(v, delta);
         reloadTimer += delta;
-        if (reloadTimer >= reloadInterval) {
+        if (reloadTimer >= reloadInterval && !isBlocked) {
             reloadTimer = 0f;
             shoot();
         }
@@ -62,12 +63,12 @@ public class Ship extends BaseShip {
             case Input.Keys.A:
             case  Input.Keys.LEFT:
                     isPressedLeft=true;
-                    moveLeft();
+                    if (!isBlocked) moveLeft();
                     break;
             case Input.Keys.D:
             case Input.Keys.RIGHT:
                     isPressedRight=true;
-                    moveRight();
+                if (!isBlocked) moveRight();
                     break;
         }
 
@@ -80,7 +81,7 @@ public class Ship extends BaseShip {
             case Input.Keys.A:
             case  Input.Keys.LEFT:
                 isPressedLeft=false;
-                if(isPressedRight){
+                if(isPressedRight && !isBlocked){
                     moveRight();
                 }else {
                     stop();
@@ -89,7 +90,7 @@ public class Ship extends BaseShip {
             case Input.Keys.D:
             case Input.Keys.RIGHT:
                 isPressedRight=false;
-                if(isPressedLeft){
+                if(isPressedLeft && !isBlocked){
                     moveLeft();
                 }else {
                     stop();
@@ -102,11 +103,11 @@ public class Ship extends BaseShip {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
-        if(touch.x<worldBounds.pos.x){
+        if(touch.x<worldBounds.pos.x && !isBlocked){
             if(leftPointer!=INVALID_POINTER) return false;
             leftPointer=pointer;
             moveLeft();
-        }else {
+        }else if (!isBlocked){
             if (rightPointer!=INVALID_POINTER) return false;
             rightPointer=pointer;
             moveRight();
@@ -118,7 +119,7 @@ public class Ship extends BaseShip {
     public boolean touchUp(Vector2 touch, int pointer) {
         if (pointer==leftPointer){
             leftPointer=INVALID_POINTER;
-            if (rightPointer!=INVALID_POINTER){
+            if (rightPointer!=INVALID_POINTER && !isBlocked){
                 moveRight();
             }else {
                 stop();
@@ -126,7 +127,7 @@ public class Ship extends BaseShip {
         }
         if (pointer==rightPointer){
             rightPointer=INVALID_POINTER;
-            if(leftPointer!=INVALID_POINTER){
+            if(leftPointer!=INVALID_POINTER && !isBlocked){
                 moveLeft();
             }else {
                 stop();
@@ -146,5 +147,9 @@ public class Ship extends BaseShip {
 
     private void stop(){
         v.setZero();
+    }
+
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
     }
 }

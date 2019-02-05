@@ -16,6 +16,8 @@ public class Answers extends Sprite {
     private boolean isPressed;
     private Sound trueAnswer;
     private Sound falseAnswer;
+    private int pressedFrame=-1;
+    private boolean isBlocked=false;
 
     public Answers(TextureAtlas atlas) {
         super(atlas.findRegion("texts"),3,4,11);
@@ -29,9 +31,13 @@ public class Answers extends Sprite {
         this.worldBounds=worldBounds;
     }
 
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
+    }
+
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
-        if(isPressed||!isMe(touch)){
+        if(isPressed||!isMe(touch)||isBlocked){
             return false;
         }
         this.pointer=pointer;
@@ -41,7 +47,7 @@ public class Answers extends Sprite {
     }
 
     public boolean touchUp(Vector2 touch, int poiter,int currentFrame) {
-        if(this.pointer!=pointer||!isPressed){
+        if(this.pointer!=pointer||!isPressed||isBlocked){
             return false;
         }
         if (isMe(touch)){
@@ -56,11 +62,16 @@ public class Answers extends Sprite {
 
         if (currentFrame!=frame){
             falseAnswer.play();
+            pressedFrame=-1;
         }else {
             trueAnswer.play();
+            pressedFrame=currentFrame;
         }
     }
 
+    public int getPressedFrame() {
+        return pressedFrame;
+    }
 
     public void dispose() {
         trueAnswer.dispose();

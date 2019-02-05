@@ -23,9 +23,4 @@ public class AnswersPool extends SpritesPool <Answers> {
         super.updateActiveSprites(delta);
     }
 
-    @Override
-    public void dispose() {
-        //только вот нужно затащить музыку сюда
-        super.dispose();
-    }
 }

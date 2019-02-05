@@ -16,7 +16,6 @@ import ru.pin_ka.pool.ExplosionPool;
 import ru.pin_ka.pool.SweetGoalPool;
 import ru.pin_ka.sprite.Background;
 import ru.pin_ka.sprite.CandyBg;
-import ru.pin_ka.sprite.game.Answers;
 import ru.pin_ka.sprite.game.ExplosionCake;
 import ru.pin_ka.sprite.game.Ship;
 import ru.pin_ka.utils.AnswersBuilding;
@@ -79,6 +78,10 @@ public class GameScreen extends Base2DScreen {
             sweetGoalPool.updateActiveSprites(delta);
             sweetGoalEmitter.generate(sweetGoalPool);
             answers.buildAnswer(sweetGoalEmitter.getCurrentFrame(),answersPool,sweetGoalEmitter.isChange());
+            if(sweetGoalEmitter.isChange()==true) {
+                ship.setBlocked(true);
+                answers.setBlocked(false);
+            }
             answersPool.updateActiveSprites(delta);
         }
 
@@ -124,6 +127,7 @@ public class GameScreen extends Base2DScreen {
             ship.dispose();
             music.dispose();
             answersPool.dispose();
+            answers.dispose();
             super.dispose();
         }
 
@@ -152,6 +156,10 @@ public class GameScreen extends Base2DScreen {
         public boolean touchUp(Vector2 touch, int pointer) {
                 ship.touchUp(touch, pointer);
             answers.touchUp(touch,pointer);
+            if (answers.isTrueAnsver()){
+                ship.setBlocked(false);
+                answers.setBlocked(true);
+            }
             return super.touchUp(touch, pointer);
         }
     }
