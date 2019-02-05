@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import ru.pin_ka.math.Rect;
 import ru.pin_ka.pool.BulletPool;
+import ru.pin_ka.pool.ExplosionPool;
 
 public class Ship extends BaseShip {
 
@@ -17,14 +18,16 @@ public class Ship extends BaseShip {
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
     private boolean isBlocked=true;
+    private ExplosionShip explosionShip;
 
 
-    public Ship(TextureAtlas atlas,BulletPool bulletPool) {
+    public Ship(TextureAtlas atlas, BulletPool bulletPool, ExplosionShip explosionShip) {
         super(atlas.findRegion("ship"),1,2,2);
         this.bulletRegion=atlas.findRegion("bullet");
         this.bulletPool = bulletPool;
         this.reloadInterval = 0.2f;
         this.shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shlep.wav"));
+        this.explosionShip=explosionShip;
         setHeightProportion(0.15f);
         this.bulletV = new Vector2(0, 0.5f);
         this.bulletHeight = 0.01f;
@@ -136,6 +139,9 @@ public class Ship extends BaseShip {
         return super.touchUp(touch, pointer);
     }
 
+    public void boom(ExplosionShip explosionShip){
+        explosionShip.set(getHeight(),pos);
+    }
 
     private void moveRight(){
         v.set(v0);

@@ -28,8 +28,7 @@ public class SweetGoalEmitter {
             sweetGoal.set(
                     choise(),
                     goalSmallV,
-                    GOAL_HP,
-                    worldBounds);
+                    GOAL_HP);
 
             sweetGoal.pos.x = random.nextFloat()*((worldBounds.getRight() - sweetGoal.getHalfWidth()) - (worldBounds.getLeft() + sweetGoal.getHalfWidth())) + (worldBounds.getLeft() + sweetGoal.getHalfWidth());
             sweetGoal.setBottom(worldBounds.getTop());

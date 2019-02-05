@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import ru.pin_ka.base.Sprite;
 import ru.pin_ka.math.Rect;
 import ru.pin_ka.pool.BulletPool;
+import ru.pin_ka.pool.ExplosionPool;
 
 public class BaseShip extends Sprite {
 
@@ -21,6 +22,7 @@ public class BaseShip extends Sprite {
         protected float bulletHeight;
         protected int damage;
         protected int hp;
+        //protected ExplosionPool explosionPool;
 
 
         public BaseShip() {

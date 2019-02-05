@@ -17,6 +17,7 @@ import ru.pin_ka.pool.SweetGoalPool;
 import ru.pin_ka.sprite.Background;
 import ru.pin_ka.sprite.CandyBg;
 import ru.pin_ka.sprite.game.ExplosionCake;
+import ru.pin_ka.sprite.game.ExplosionShip;
 import ru.pin_ka.sprite.game.Ship;
 import ru.pin_ka.utils.AnswersBuilding;
 import ru.pin_ka.utils.SweetGoalEmitter;
@@ -31,6 +32,7 @@ public class GameScreen extends Base2DScreen {
         private Ship ship;
         private BulletPool bulletPool;
         private ExplosionPool explosionPool;
+        private ExplosionShip explosionShip;
         private SweetGoalPool sweetGoalPool;
         private SweetGoalEmitter sweetGoalEmitter;
         private AnswersPool answersPool;
@@ -53,8 +55,9 @@ public class GameScreen extends Base2DScreen {
             }
             bulletPool = new BulletPool();
             explosionPool = new ExplosionPool(atlas);
-            sweetGoalPool=new SweetGoalPool(atlas);
-            ship = new Ship(atlas, bulletPool);
+            explosionShip=new ExplosionShip(atlas);
+            sweetGoalPool=new SweetGoalPool(atlas,worldBounds,explosionPool);
+            ship = new Ship(atlas, bulletPool,explosionShip);
             sweetGoalEmitter=new SweetGoalEmitter(worldBounds);
             answersPool=new AnswersPool(atlas);
             answers=new AnswersBuilding(worldBounds);
@@ -144,10 +147,8 @@ public class GameScreen extends Base2DScreen {
         }
 
         @Override
-        public boolean touchDown(Vector2 touch, int pointer) {
-            ExplosionCake explosion = explosionPool.obtain();
-            explosion.set(0.15f, touch);
-                ship.touchDown(touch, pointer);
+        public boolean touchDown(Vector2 touch, int pointer) { ;
+            ship.touchDown(touch, pointer);
             answers.touchDown(touch, pointer);
             return super.touchDown(touch, pointer);
         }
