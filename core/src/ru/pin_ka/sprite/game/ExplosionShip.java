@@ -21,7 +21,7 @@ public class ExplosionShip extends Sprite {
     public void set(float height, Vector2 pos) {
         this.pos.set(pos);
         setHeightProportion(height);
-        explosionSound.play(0.5f);
+        explosionSound.play();
     }
 
     @Override
@@ -29,11 +29,13 @@ public class ExplosionShip extends Sprite {
         animateTimer += delta;
         if (animateTimer >= animateInterval) {
             animateTimer = 0f;
-            if (++frame == regions.length) {
+            if (++frame == 32) {
                 destroy();
             }
         }
     }
+
+
 
     @Override
     public void destroy() {
