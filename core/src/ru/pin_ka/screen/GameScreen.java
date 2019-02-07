@@ -17,7 +17,6 @@ import ru.pin_ka.pool.SweetGoalPool;
 import ru.pin_ka.sprite.Background;
 import ru.pin_ka.sprite.CandyBg;
 import ru.pin_ka.sprite.game.Bullet;
-import ru.pin_ka.sprite.game.ExplosionShip;
 import ru.pin_ka.sprite.game.GameOver;
 import ru.pin_ka.sprite.game.Ship;
 import ru.pin_ka.sprite.game.SweetGoal;
@@ -26,7 +25,6 @@ import ru.pin_ka.utils.SweetGoalEmitter;
 
 public class GameScreen extends Base2DScreen {
 
-
         private TextureAtlas atlas;
         private Texture bg;
         private Background background;
@@ -34,7 +32,6 @@ public class GameScreen extends Base2DScreen {
         private Ship ship;
         private BulletPool bulletPool;
         private ExplosionPool explosionPool;
-        private ExplosionShip explosionShip;
         private SweetGoalPool sweetGoalPool;
         private SweetGoalEmitter sweetGoalEmitter;
         private AnswersPool answersPool;
@@ -58,8 +55,7 @@ public class GameScreen extends Base2DScreen {
             }
             bulletPool = new BulletPool();
             explosionPool = new ExplosionPool(atlas);
-            explosionShip=new ExplosionShip(atlas);
-            ship = new Ship(atlas, bulletPool,explosionShip);
+            ship = new Ship(atlas, bulletPool,explosionPool);
             sweetGoalPool=new SweetGoalPool(atlas,worldBounds,explosionPool,ship);
             sweetGoalEmitter=new SweetGoalEmitter(worldBounds);
             answersPool=new AnswersPool(atlas);
@@ -80,8 +76,9 @@ public class GameScreen extends Base2DScreen {
             for (CandyBg aCandyBg : candyBg) {
                 aCandyBg.update(delta);
             }
-            if (!ship.isDestroyed()){
+            if (!ship.isDestroyed()) {
                 ship.update(delta);
+            }
                 bulletPool.updateActiveSprites(delta);
                 explosionPool.updateActiveSprites(delta);
                 sweetGoalPool.updateActiveSprites(delta);
@@ -92,8 +89,6 @@ public class GameScreen extends Base2DScreen {
                     answers.setBlocked(false);
                 }
                 answersPool.updateActiveSprites(delta);
-            }
-                explosionShip.update(delta);
 
 
         }
@@ -144,17 +139,13 @@ public class GameScreen extends Base2DScreen {
             for (CandyBg aCandyBg : candyBg) {
                 aCandyBg.draw(batch);
             }
-
+            bulletPool.drawActiveSprites(batch);
+            explosionPool.drawActiveSprites(batch);
+            sweetGoalPool.drawActiveSprites(batch);
             if (!ship.isDestroyed()){
-                answersPool.drawActiveSprites(batch);
-                bulletPool.drawActiveSprites(batch);
-                explosionPool.drawActiveSprites(batch);
-                sweetGoalPool.drawActiveSprites(batch);
                 ship.draw(batch);
-            }else {
-                gameOver.draw(batch);
             }
-            explosionShip.draw(batch);
+            answersPool.drawActiveSprites(batch);
             batch.end();
         }
 
@@ -178,6 +169,7 @@ public class GameScreen extends Base2DScreen {
             ship.dispose();
             music.dispose();
             answersPool.dispose();
+            sweetGoalPool.dispose();
             answers.dispose();
             super.dispose();
         }
@@ -194,7 +186,12 @@ public class GameScreen extends Base2DScreen {
             return super.keyUp(keycode);
         }
 
-        @Override
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
         public boolean touchDown(Vector2 touch, int pointer) { ;
             if (!ship.isDestroyed())ship.touchDown(touch, pointer);
             answers.touchDown(touch, pointer);

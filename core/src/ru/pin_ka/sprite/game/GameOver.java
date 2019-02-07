@@ -1,7 +1,6 @@
 package ru.pin_ka.sprite.game;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-
 import ru.pin_ka.base.Sprite;
 import ru.pin_ka.math.Rect;
 

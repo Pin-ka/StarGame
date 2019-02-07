@@ -1,5 +1,6 @@
 package ru.pin_ka.sprite.game;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import ru.pin_ka.math.Rect;
@@ -11,18 +12,19 @@ public class SweetGoal extends BaseShip {
 
     private Vector2 v0=new Vector2();
     private Rect worldBounds;
-    private ExplosionPool explosionPool;
     private State state;
     private Vector2 descentV=new Vector2(0,-0.15f);
     private Vector2 vDamage=new Vector2(-0.5f,-0.1f);
-    Ship ship;
+    private Ship ship;
+    private Sound explosionSound;
 
-    public SweetGoal(TextureAtlas atlas,Rect worldBounds,ExplosionPool explosionPool,Ship ship) {
-        super(atlas.findRegion("cakies"),3,4,11);
+    public SweetGoal(TextureAtlas atlas,Rect worldBounds,ExplosionPool explosionPool,Ship ship,Sound explosionSound) {
+        super(atlas.findRegion("cakies"),3,4,11,explosionPool);
         this.v.set(v0);
         this.worldBounds=worldBounds;
         this.explosionPool=explosionPool;
         this.ship=ship;
+        this.explosionSound = explosionSound;
         setHeightProportion(0.15f);
     }
 
@@ -30,7 +32,6 @@ public class SweetGoal extends BaseShip {
         int frame,
         Vector2 v0,
         int hp
-
     ){
         this.frame=frame;
         this.v0.set(v0);
@@ -38,7 +39,6 @@ public class SweetGoal extends BaseShip {
         v.set(descentV);
         state=State.DESCENT;
     }
-
 
     @Override
     public void update(float delta) {
@@ -60,7 +60,6 @@ public class SweetGoal extends BaseShip {
                     ship.destroy();
                 }
                 break;
-
         }
     }
 
@@ -74,13 +73,7 @@ public class SweetGoal extends BaseShip {
         if(getRight()>=worldBounds.getRight()){
             vDamage.set(-0.5f,-0.1f);
         }
-
         damageTimer=0f;
-    }
-
-    public void boom(){
-        ExplosionCake explosionCake=explosionPool.obtain();
-        explosionCake.set(getHeight(),pos);
     }
 
     public boolean isBulletCollision(Rect bullet){
@@ -93,7 +86,8 @@ public class SweetGoal extends BaseShip {
 
     @Override
     public void destroy() {
+        boom(Explosion.Type.CAKE);
+        explosionSound.play();
         super.destroy();
-        boom();
     }
 }

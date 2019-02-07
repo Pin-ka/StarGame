@@ -2,7 +2,6 @@ package ru.pin_ka.sprite.game;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-
 import ru.pin_ka.base.Sprite;
 import ru.pin_ka.math.Rect;
 
@@ -11,7 +10,7 @@ public class Bullet extends Sprite {
     private Rect worldBounds;
     private Vector2 v=new Vector2();
     private int damage;
-    Object ovner;
+    private Object ovner;
 
     public Bullet() {
         regions=new TextureRegion[1];
@@ -41,10 +40,6 @@ public class Bullet extends Sprite {
         setHeightProportion(height);
         this.worldBounds=worldBounds;
         this.damage=damage;
-    }
-
-    public int getDamage() {
-        return damage;
     }
 
     public Object getOvner() {

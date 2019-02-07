@@ -3,12 +3,11 @@ package ru.pin_ka.base;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-
 import ru.pin_ka.math.Rect;
 import ru.pin_ka.utils.Regions;
 
 public class Sprite extends Rect {
-    protected  float angle;
+    private float angle;
     protected float scale=1f;
     protected TextureRegion [] regions;
     protected int frame;
@@ -32,7 +31,6 @@ public class Sprite extends Rect {
 
     }
 
-
     public void setHeightProportion (float height){
         setHeight(height);
         float aspect=regions[frame].getRegionWidth()/(float)regions[frame].getRegionHeight();
@@ -51,11 +49,9 @@ public class Sprite extends Rect {
     }
 
     public void resize (Rect worldBounds){
-
     }
 
     public void update (float delta){
-
     }
 
     public boolean touchDown (Vector2 touch,int pointer){
@@ -86,7 +82,7 @@ public class Sprite extends Rect {
         this.isDestroyed=true;
     }
 
-    public void  flushDestroy(){
+    void  flushDestroy(){
         this.isDestroyed=false;
     }
 

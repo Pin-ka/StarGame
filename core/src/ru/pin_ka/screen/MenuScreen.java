@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-
 import ru.pin_ka.base.Base2DScreen;
 import ru.pin_ka.math.Rect;
 import ru.pin_ka.sprite.Background;
@@ -111,5 +110,10 @@ public class MenuScreen extends Base2DScreen {
     public boolean keyDown(int keycode) {
 
         return super.keyDown(keycode);
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
     }
 }

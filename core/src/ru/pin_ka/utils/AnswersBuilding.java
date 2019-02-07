@@ -13,8 +13,8 @@ public class AnswersBuilding {
 
     private Rect worldBounds;
     private static final int NUMBERS_OF_ANSWERS=4;
-    ArrayList <Integer> frames =new ArrayList(NUMBERS_OF_ANSWERS);
-    ArrayList <Answers> answers=new ArrayList<Answers>(NUMBERS_OF_ANSWERS);
+    private ArrayList frames =new ArrayList(NUMBERS_OF_ANSWERS);
+    private ArrayList <Answers> answers=new ArrayList<Answers>(NUMBERS_OF_ANSWERS);
     private Random random=new Random();
     private int currentFrame;
     private boolean isTrueAnswer;
@@ -36,7 +36,7 @@ public class AnswersBuilding {
             buildFrames(frame);
             for(int i=0;i<NUMBERS_OF_ANSWERS;i++) {
                 Answers answer = answersPool.obtain();
-                answer.set(frames.get(i), worldBounds);
+                answer.set((Integer) frames.get(i), worldBounds);
                 answers.add(answer);
                 if (i%2==0){
                     answer.pos.x = worldBounds.getLeft() + answer.getHalfWidth();
@@ -66,22 +66,19 @@ public class AnswersBuilding {
         }
     }
 
-
-    public boolean touchDown(Vector2 touch, int pointer) {
+    public void touchDown(Vector2 touch, int pointer) {
             for (int i = 0; i < NUMBERS_OF_ANSWERS; i++) {
                 answers.get(i).touchDown(touch, pointer);
             }
-        return false;
     }
 
-    public boolean touchUp(Vector2 touch, int pointer) {
+    public void touchUp(Vector2 touch, int pointer) {
             for (int i = 0; i < NUMBERS_OF_ANSWERS; i++) {
                 answers.get(i).touchUp(touch, pointer, currentFrame);
                 if(answers.get(i).getPressedFrame()==currentFrame){
                     isTrueAnswer=true;
                 }
             }
-            return false;
     }
 
     public void setBlocked(boolean isBlocked){
