@@ -7,9 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-
 import java.util.List;
-
 import ru.pin_ka.base.Base2DScreen;
 import ru.pin_ka.math.Rect;
 import ru.pin_ka.pool.AnswersPool;
@@ -19,7 +17,6 @@ import ru.pin_ka.pool.SweetGoalPool;
 import ru.pin_ka.sprite.Background;
 import ru.pin_ka.sprite.CandyBg;
 import ru.pin_ka.sprite.game.Bullet;
-import ru.pin_ka.sprite.game.ExplosionCake;
 import ru.pin_ka.sprite.game.ExplosionShip;
 import ru.pin_ka.sprite.game.GameOver;
 import ru.pin_ka.sprite.game.Ship;

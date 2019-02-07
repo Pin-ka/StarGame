@@ -31,23 +31,30 @@ texts
   orig: 801, 151
   offset: 0, 0
   index: -1
+spray
+  rotate: false
+  xy: 1178, 757
+  size: 360, 240
+  orig: 360, 240
+  offset: 0, 0
+  index: -1
 expCake
   rotate: false
-  xy: 1178, 837
+  xy: 2051, 1349
   size: 431, 160
   orig: 431, 160
   offset: 0, 0
   index: -1
 gameOver
   rotate: false
-  xy: 2051, 1383
+  xy: 2661, 1897
   size: 382, 126
   orig: 382, 126
   offset: 0, 0
   index: -1
 newGame
   rotate: false
-  xy: 2661, 1886
+  xy: 804, 127
   size: 367, 137
   orig: 367, 137
   offset: 0, 0
@@ -61,14 +68,14 @@ candies
   index: -1
 ink
   rotate: false
-  xy: 804, 161
+  xy: 1178, 652
   size: 52, 103
   orig: 52, 103
   offset: 0, 0
   index: -1
 bullet
   rotate: false
-  xy: 1178, 818
+  xy: 1540, 980
   size: 18, 17
   orig: 18, 17
   offset: 0, 0
