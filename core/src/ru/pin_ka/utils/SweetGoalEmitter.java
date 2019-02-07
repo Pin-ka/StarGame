@@ -10,7 +10,7 @@ import ru.pin_ka.sprite.game.SweetGoal;
 
 public class SweetGoalEmitter {
 
-    private static final int  GOAL_HP=1;
+    private static final int  GOAL_HP=2;
     private Random random=new Random();
     private Vector2 goalSmallV=new Vector2(0,-0.1f);
     private Rect worldBounds;
@@ -28,8 +28,7 @@ public class SweetGoalEmitter {
             sweetGoal.set(
                     choise(),
                     goalSmallV,
-                    GOAL_HP,
-                    worldBounds);
+                    GOAL_HP);
 
             sweetGoal.pos.x = random.nextFloat()*((worldBounds.getRight() - sweetGoal.getHalfWidth()) - (worldBounds.getLeft() + sweetGoal.getHalfWidth())) + (worldBounds.getLeft() + sweetGoal.getHalfWidth());
             sweetGoal.setBottom(worldBounds.getTop());

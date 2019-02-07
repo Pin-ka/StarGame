@@ -3,36 +3,97 @@ package ru.pin_ka.sprite.game;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import ru.pin_ka.math.Rect;
+import ru.pin_ka.pool.ExplosionPool;
 
 public class SweetGoal extends BaseShip {
 
-    private Vector2 v0=new Vector2();
+    private enum State {DESCENT,FLIGHT};
 
-    public SweetGoal(TextureAtlas atlas) {
+    private Vector2 v0=new Vector2();
+    private Rect worldBounds;
+    private ExplosionPool explosionPool;
+    private State state;
+    private Vector2 descentV=new Vector2(0,-0.15f);
+    private Vector2 vDamage=new Vector2(-0.5f,-0.1f);
+    Ship ship;
+
+    public SweetGoal(TextureAtlas atlas,Rect worldBounds,ExplosionPool explosionPool,Ship ship) {
         super(atlas.findRegion("cakies"),3,4,11);
         this.v.set(v0);
+        this.worldBounds=worldBounds;
+        this.explosionPool=explosionPool;
+        this.ship=ship;
         setHeightProportion(0.15f);
     }
 
     public void set(
         int frame,
         Vector2 v0,
-        int hp,
-        Rect worldBounds
+        int hp
+
     ){
         this.frame=frame;
         this.v0.set(v0);
         this.hp=hp;
-        v.set(v0);
-        this.worldBounds=worldBounds;
+        v.set(descentV);
+        state=State.DESCENT;
     }
+
 
     @Override
     public void update(float delta) {
         super.update(delta);
         this.pos.mulAdd(v,delta);
-        if (isOutside(worldBounds)) {
-            destroy();
+        switch (state){
+            case DESCENT:
+                if(getTop()<=worldBounds.getTop()){
+                    v.set(v0);
+                    state=State.FLIGHT;
+                }
+                break;
+            case FLIGHT:
+                if (damageTimer>=damageInterval){
+                    v.set(v0);
+                }
+                if (getBottom()<=worldBounds.getBottom()||getRight()<=worldBounds.getLeft()) {
+                    destroy();
+                    ship.destroy();
+                }
+                break;
+
         }
+    }
+
+    @Override
+    public void damage(int damage) {
+        super.damage(damage);
+        v.set(vDamage);
+        if(getLeft()<=worldBounds.getLeft()){
+           vDamage.set(0.5f,-0.1f);
+        }
+        if(getRight()>=worldBounds.getRight()){
+            vDamage.set(-0.5f,-0.1f);
+        }
+
+        damageTimer=0f;
+    }
+
+    public void boom(){
+        ExplosionCake explosionCake=explosionPool.obtain();
+        explosionCake.set(getHeight(),pos);
+    }
+
+    public boolean isBulletCollision(Rect bullet){
+        return   !(bullet.getRight()<getLeft()
+                ||bullet.getLeft()>getRight()
+                ||bullet.getBottom()>getTop()
+                ||bullet.getTop()<pos.y
+                );
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        boom();
     }
 }

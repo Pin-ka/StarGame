@@ -6,10 +6,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import ru.pin_ka.math.Rect;
 import ru.pin_ka.pool.BulletPool;
+import ru.pin_ka.pool.ExplosionPool;
 
 public class Ship extends BaseShip {
 
-    static final int INVALID_POINTER=-1;
+    private static final int INVALID_POINTER=-1;
 
     private Vector2 v0=new Vector2(0.2f,0);
     private boolean isPressedLeft;
@@ -17,19 +18,21 @@ public class Ship extends BaseShip {
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
     private boolean isBlocked=true;
+    private ExplosionShip explosionShip;
 
 
-    public Ship(TextureAtlas atlas,BulletPool bulletPool) {
+    public Ship(TextureAtlas atlas, BulletPool bulletPool, ExplosionShip explosionShip) {
         super(atlas.findRegion("ship"),1,2,2);
         this.bulletRegion=atlas.findRegion("bullet");
         this.bulletPool = bulletPool;
-        this.reloadInterval = 0.2f;
+        this.reloadInterval = 0.5f;
         this.shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shlep.wav"));
+        this.explosionShip=explosionShip;
         setHeightProportion(0.15f);
         this.bulletV = new Vector2(0, 0.5f);
         this.bulletHeight = 0.01f;
         this.damage = 1;
-        this.hp = 100;
+        this.hp = 10;
     }
 
     @Override
@@ -43,6 +46,9 @@ public class Ship extends BaseShip {
     public void update(float delta) {
         super.update(delta);
         pos.mulAdd(v, delta);
+        if (damageTimer>=damageInterval){
+            frame=0;
+        }
         reloadTimer += delta;
         if (reloadTimer >= reloadInterval && !isBlocked) {
             reloadTimer = 0f;
@@ -56,6 +62,19 @@ public class Ship extends BaseShip {
             setLeft(worldBounds.getLeft());
             stop();
         }
+    }
+
+    @Override
+    public void damage(int damage) {
+        super.damage(damage);
+        frame=1;
+        damageTimer=0f;
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        boom(explosionShip);
     }
 
     public boolean keyDown(int keycode) {
@@ -117,6 +136,9 @@ public class Ship extends BaseShip {
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer) {
+        if (isBlocked){
+            damage(1);
+        }
         if (pointer==leftPointer){
             leftPointer=INVALID_POINTER;
             if (rightPointer!=INVALID_POINTER && !isBlocked){
@@ -136,6 +158,9 @@ public class Ship extends BaseShip {
         return super.touchUp(touch, pointer);
     }
 
+    public void boom(ExplosionShip explosionShip){
+        explosionShip.set(getHeight(),pos);
+    }
 
     private void moveRight(){
         v.set(v0);

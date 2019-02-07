@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-
+import java.util.List;
 import ru.pin_ka.base.Base2DScreen;
 import ru.pin_ka.math.Rect;
 import ru.pin_ka.pool.AnswersPool;
@@ -16,8 +16,11 @@ import ru.pin_ka.pool.ExplosionPool;
 import ru.pin_ka.pool.SweetGoalPool;
 import ru.pin_ka.sprite.Background;
 import ru.pin_ka.sprite.CandyBg;
-import ru.pin_ka.sprite.game.ExplosionCake;
+import ru.pin_ka.sprite.game.Bullet;
+import ru.pin_ka.sprite.game.ExplosionShip;
+import ru.pin_ka.sprite.game.GameOver;
 import ru.pin_ka.sprite.game.Ship;
+import ru.pin_ka.sprite.game.SweetGoal;
 import ru.pin_ka.utils.AnswersBuilding;
 import ru.pin_ka.utils.SweetGoalEmitter;
 
@@ -31,11 +34,13 @@ public class GameScreen extends Base2DScreen {
         private Ship ship;
         private BulletPool bulletPool;
         private ExplosionPool explosionPool;
+        private ExplosionShip explosionShip;
         private SweetGoalPool sweetGoalPool;
         private SweetGoalEmitter sweetGoalEmitter;
         private AnswersPool answersPool;
         private AnswersBuilding answers;
         private Music music;
+        private GameOver gameOver;
 
         @Override
         public void show() {
@@ -53,58 +58,103 @@ public class GameScreen extends Base2DScreen {
             }
             bulletPool = new BulletPool();
             explosionPool = new ExplosionPool(atlas);
-            sweetGoalPool=new SweetGoalPool(atlas);
-            ship = new Ship(atlas, bulletPool);
+            explosionShip=new ExplosionShip(atlas);
+            ship = new Ship(atlas, bulletPool,explosionShip);
+            sweetGoalPool=new SweetGoalPool(atlas,worldBounds,explosionPool,ship);
             sweetGoalEmitter=new SweetGoalEmitter(worldBounds);
             answersPool=new AnswersPool(atlas);
             answers=new AnswersBuilding(worldBounds);
+            gameOver=new GameOver(atlas);
         }
 
         @Override
         public void render(float delta) {
             super.render(delta);
             update(delta);
+            checkCollisions();
             deleteAllDestroyed();
             draw();
         }
 
-        public void update(float delta) {
-            for (int i = 0; i < candyBg.length; i++) {
-                candyBg[i].update(delta);
+        private void update(float delta) {
+            for (CandyBg aCandyBg : candyBg) {
+                aCandyBg.update(delta);
             }
-            ship.update(delta);
-            bulletPool.updateActiveSprites(delta);
-            explosionPool.updateActiveSprites(delta);
-            sweetGoalPool.updateActiveSprites(delta);
-            sweetGoalEmitter.generate(sweetGoalPool);
-            answers.buildAnswer(sweetGoalEmitter.getCurrentFrame(),answersPool,sweetGoalEmitter.isChange());
-            if(sweetGoalEmitter.isChange()==true) {
-                ship.setBlocked(true);
-                answers.setBlocked(false);
+            if (!ship.isDestroyed()){
+                ship.update(delta);
+                bulletPool.updateActiveSprites(delta);
+                explosionPool.updateActiveSprites(delta);
+                sweetGoalPool.updateActiveSprites(delta);
+                sweetGoalEmitter.generate(sweetGoalPool);
+                answers.buildAnswer(sweetGoalEmitter.getCurrentFrame(),answersPool,sweetGoalEmitter.isChange());
+                if(sweetGoalEmitter.isChange()) {
+                    ship.setBlocked(true);
+                    answers.setBlocked(false);
+                }
+                answersPool.updateActiveSprites(delta);
             }
-            answersPool.updateActiveSprites(delta);
+                explosionShip.update(delta);
+
+
         }
 
-        public void deleteAllDestroyed() {
+        private void checkCollisions(){
+            List <SweetGoal>sweetGoalList=sweetGoalPool.getActiveObjects();
+            for (SweetGoal sweetGoal:sweetGoalList){
+                if (sweetGoal.isDestroyed()){
+                    continue;
+                }
+                float minDist=sweetGoal.getHalfHeight()+ship.getHalfWidth();
+                if (sweetGoal.pos.dst2(ship.pos)<minDist*minDist){
+                    sweetGoal.destroy();
+                    ship.damage(sweetGoal.getDamage());
+                    return;
+                }
+            }
+
+            List <Bullet>bulletList=bulletPool.getActiveObjects();
+            for (SweetGoal sweetGoal:sweetGoalList){
+                if (sweetGoal.isDestroyed()){
+                    continue;
+                }
+               for (Bullet bullet:bulletList){
+                    if (bullet.getOvner()!=ship || bullet.isDestroyed()){
+                        continue;
+                    }
+                    if (sweetGoal.isBulletCollision(bullet)){
+                        sweetGoal.damage(ship.getDamage());
+                        bullet.destroy();
+                    }
+               }
+            }
+        }
+
+        private void deleteAllDestroyed() {
             bulletPool.freeAllDestroyedActiveSprites();
             explosionPool.freeAllDestroyedActiveSprites();
             sweetGoalPool.freeAllDestroyedActiveSprites();
             answersPool.freeAllDestroyedActiveSprites();
         }
 
-        public void draw() {
+        private void draw() {
             Gdx.gl.glClearColor(0.5f, 0.2f, 0.3f, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             batch.begin();
             background.draw(batch);
-            for (int i = 0; i < candyBg.length; i++) {
-                candyBg[i].draw(batch);
+            for (CandyBg aCandyBg : candyBg) {
+                aCandyBg.draw(batch);
             }
-            ship.draw(batch);
-            answersPool.drawActiveSprites(batch);
-            bulletPool.drawActiveSprites(batch);
-            explosionPool.drawActiveSprites(batch);
-            sweetGoalPool.drawActiveSprites(batch);
+
+            if (!ship.isDestroyed()){
+                answersPool.drawActiveSprites(batch);
+                bulletPool.drawActiveSprites(batch);
+                explosionPool.drawActiveSprites(batch);
+                sweetGoalPool.drawActiveSprites(batch);
+                ship.draw(batch);
+            }else {
+                gameOver.draw(batch);
+            }
+            explosionShip.draw(batch);
             batch.end();
         }
 
@@ -112,10 +162,11 @@ public class GameScreen extends Base2DScreen {
         public void resize(Rect worldBounds) {
             super.resize(worldBounds);
             background.resize(worldBounds);
-            for (int i = 0; i < candyBg.length; i++) {
-                candyBg[i].resize(worldBounds);
+            for (CandyBg aCandyBg : candyBg) {
+                aCandyBg.resize(worldBounds);
             }
             ship.resize(worldBounds);
+            gameOver.resize(worldBounds);
         }
 
         @Override
@@ -133,28 +184,26 @@ public class GameScreen extends Base2DScreen {
 
         @Override
         public boolean keyDown(int keycode) {
-                ship.keyDown(keycode);
+                if (!ship.isDestroyed())ship.keyDown(keycode);
             return super.keyDown(keycode);
         }
 
         @Override
         public boolean keyUp(int keycode) {
-                ship.keyUp(keycode);
+            if (!ship.isDestroyed())ship.keyUp(keycode);
             return super.keyUp(keycode);
         }
 
         @Override
-        public boolean touchDown(Vector2 touch, int pointer) {
-            ExplosionCake explosion = explosionPool.obtain();
-            explosion.set(0.15f, touch);
-                ship.touchDown(touch, pointer);
+        public boolean touchDown(Vector2 touch, int pointer) { ;
+            if (!ship.isDestroyed())ship.touchDown(touch, pointer);
             answers.touchDown(touch, pointer);
             return super.touchDown(touch, pointer);
         }
 
         @Override
         public boolean touchUp(Vector2 touch, int pointer) {
-                ship.touchUp(touch, pointer);
+            if (!ship.isDestroyed())ship.touchUp(touch, pointer);
             answers.touchUp(touch,pointer);
             if (answers.isTrueAnsver()){
                 ship.setBlocked(false);

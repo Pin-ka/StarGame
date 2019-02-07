@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import ru.pin_ka.base.Sprite;
 import ru.pin_ka.math.Rect;
 import ru.pin_ka.pool.BulletPool;
+import ru.pin_ka.pool.ExplosionPool;
 
 public class BaseShip extends Sprite {
 
@@ -22,6 +23,10 @@ public class BaseShip extends Sprite {
         protected int damage;
         protected int hp;
 
+        protected float damageInterval=0.1f;
+        protected float damageTimer=damageInterval;
+        //protected ExplosionPool explosionPool;
+
 
         public BaseShip() {
             super();
@@ -31,7 +36,24 @@ public class BaseShip extends Sprite {
             super(region, rows, cols, frames);
         }
 
-        @Override
+    @Override
+    public void update(float delta) {
+        super.update(delta);
+        damageTimer+=delta;
+    }
+
+    public void damage(int damage){
+            hp-=damage;
+            if (hp<=0){
+                destroy();
+            }
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    @Override
         public void resize(Rect worldBounds) {
             super.resize(worldBounds);
             this.worldBounds = worldBounds;
