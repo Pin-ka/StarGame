@@ -200,12 +200,12 @@ public class GameScreen extends Base2DScreen {
 
         @Override
         public boolean touchUp(Vector2 touch, int pointer) {
-            if (!ship.isDestroyed())ship.touchUp(touch, pointer);
             answers.touchUp(touch,pointer);
             if (answers.isTrueAnsver()){
                 ship.setBlocked(false);
                 answers.setBlocked(true);
             }
+            if (!ship.isDestroyed())ship.touchUp(touch, pointer);
             return super.touchUp(touch, pointer);
         }
     }

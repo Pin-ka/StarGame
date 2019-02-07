@@ -37,6 +37,7 @@ public abstract class BaseShip extends Sprite {
     public void damage(int damage){
             hp-=damage;
             if (hp<=0){
+                hp=0;
                 destroy();
             }
     }

@@ -13,6 +13,6 @@ public class DesktopLauncher {
 		config.width=400;
 		config.height=(int)(config.width/acpect);
 		config.resizable=false;
-		new LwjglApplication(new Base2DScreen(), config);
+		new LwjglApplication(new Sweet2DGame(), config);
 	}
 }
