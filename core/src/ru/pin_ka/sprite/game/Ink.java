@@ -2,19 +2,19 @@ package ru.pin_ka.sprite.game;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import ru.pin_ka.base.Sprite;
 import ru.pin_ka.math.Rect;
 import ru.pin_ka.pool.ExplosionPool;
 
 public class Ink extends BaseShip {
 
+    public enum State {NO_COLLISION, COLLISION};
+
     private Rect worldBounds;
     private Vector2 v=new Vector2();
     private Sound explosionSound;
-    private int damage;
     private Ship ship;
+    private State state;
 
     public Ink(TextureAtlas atlas, Rect worldBounds, ExplosionPool explosionPool, Ship ship, Sound explosionSound) {
         super(atlas.findRegion("ink"),explosionPool);
@@ -23,7 +23,9 @@ public class Ink extends BaseShip {
         this.explosionPool=explosionPool;
         this.ship=ship;
         this.explosionSound = explosionSound;
+        this.damage=1;
         setHeightProportion(0.15f);
+        state = State.NO_COLLISION;
     }
 
     @Override
@@ -42,10 +44,21 @@ public class Ink extends BaseShip {
         this.worldBounds=worldBounds;
     }
 
+    public void setState(State state) {
+        this.state = state;
+    }
+
     @Override
     public void destroy() {
-        boom(Explosion.Type.INK);
-        explosionSound.play();
+        switch (state){
+            case COLLISION:
+                boom(Explosion.Type.INK);
+                explosionSound.play();
+                state=State.NO_COLLISION;
+                break;
+            case NO_COLLISION:
+                break;
+        }
         super.destroy();
     }
 }

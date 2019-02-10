@@ -19,11 +19,13 @@ import ru.pin_ka.sprite.Background;
 import ru.pin_ka.sprite.CandyBg;
 import ru.pin_ka.sprite.game.Bullet;
 import ru.pin_ka.sprite.game.GameOver;
+import ru.pin_ka.sprite.game.Ink;
 import ru.pin_ka.sprite.game.Ship;
 import ru.pin_ka.sprite.game.SweetGoal;
 import ru.pin_ka.utils.AnswersBuilding;
 import ru.pin_ka.utils.InkEmitter;
 import ru.pin_ka.utils.SweetGoalEmitter;
+import static ru.pin_ka.sprite.game.Ink.State.COLLISION;
 
 public class GameScreen extends Base2DScreen {
 
@@ -109,6 +111,20 @@ public class GameScreen extends Base2DScreen {
                 if (sweetGoal.pos.dst2(ship.pos)<minDist*minDist){
                     sweetGoal.destroy();
                     ship.damage(sweetGoal.getDamage());
+                    return;
+                }
+            }
+
+            List <Ink> inkList=inkPool.getActiveObjects();
+            for (Ink ink:inkList){
+                if (ink.isDestroyed()){
+                    continue;
+                }
+                float minDist=ink.getHalfHeight()+ship.getHalfWidth();
+                if (ink.pos.dst2(ship.pos)<minDist*minDist){
+                    ink.setState(COLLISION);
+                    ink.destroy();
+                    ship.damage(ink.getDamage());
                     return;
                 }
             }
