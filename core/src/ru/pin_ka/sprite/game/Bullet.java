@@ -9,8 +9,6 @@ public class Bullet extends Sprite {
 
     private Rect worldBounds;
     private Vector2 v=new Vector2();
-    private int damage;
-    private Object ovner;
 
     public Bullet() {
         regions=new TextureRegion[1];
@@ -25,24 +23,17 @@ public class Bullet extends Sprite {
     }
 
     public void set(
-            Object ovner,
             TextureRegion region,
             Vector2 pos0,
             Vector2 v0,
             float height,
-            Rect worldBounds,
-            int damage
+            Rect worldBounds
     ){
-        this.ovner=ovner;
         this.regions[0]=region;
         this.pos.set(pos0);
         this.v.set(v0);
         setHeightProportion(height);
         this.worldBounds=worldBounds;
-        this.damage=damage;
     }
 
-    public Object getOvner() {
-        return ovner;
-    }
 }

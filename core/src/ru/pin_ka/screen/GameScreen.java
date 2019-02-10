@@ -13,6 +13,7 @@ import ru.pin_ka.math.Rect;
 import ru.pin_ka.pool.AnswersPool;
 import ru.pin_ka.pool.BulletPool;
 import ru.pin_ka.pool.ExplosionPool;
+import ru.pin_ka.pool.InkPool;
 import ru.pin_ka.pool.SweetGoalPool;
 import ru.pin_ka.sprite.Background;
 import ru.pin_ka.sprite.CandyBg;
@@ -21,6 +22,7 @@ import ru.pin_ka.sprite.game.GameOver;
 import ru.pin_ka.sprite.game.Ship;
 import ru.pin_ka.sprite.game.SweetGoal;
 import ru.pin_ka.utils.AnswersBuilding;
+import ru.pin_ka.utils.InkEmitter;
 import ru.pin_ka.utils.SweetGoalEmitter;
 
 public class GameScreen extends Base2DScreen {
@@ -33,6 +35,8 @@ public class GameScreen extends Base2DScreen {
         private BulletPool bulletPool;
         private ExplosionPool explosionPool;
         private SweetGoalPool sweetGoalPool;
+        private InkPool inkPool;
+        private InkEmitter inkEmitter;
         private SweetGoalEmitter sweetGoalEmitter;
         private AnswersPool answersPool;
         private AnswersBuilding answers;
@@ -57,7 +61,9 @@ public class GameScreen extends Base2DScreen {
             explosionPool = new ExplosionPool(atlas);
             ship = new Ship(atlas, bulletPool,explosionPool);
             sweetGoalPool=new SweetGoalPool(atlas,worldBounds,explosionPool,ship);
+            inkPool=new InkPool(atlas,worldBounds,explosionPool,ship);
             sweetGoalEmitter=new SweetGoalEmitter(worldBounds);
+            inkEmitter=new InkEmitter(worldBounds);
             answersPool=new AnswersPool(atlas);
             answers=new AnswersBuilding(worldBounds);
             gameOver=new GameOver(atlas);
@@ -82,15 +88,15 @@ public class GameScreen extends Base2DScreen {
                 bulletPool.updateActiveSprites(delta);
                 explosionPool.updateActiveSprites(delta);
                 sweetGoalPool.updateActiveSprites(delta);
+                inkPool.updateActiveSprites(delta);
                 sweetGoalEmitter.generate(sweetGoalPool);
+                inkEmitter.generate(delta,inkPool);
                 answers.buildAnswer(sweetGoalEmitter.getCurrentFrame(),answersPool,sweetGoalEmitter.isChange());
                 if(sweetGoalEmitter.isChange()) {
                     ship.setBlocked(true);
                     answers.setBlocked(false);
                 }
                 answersPool.updateActiveSprites(delta);
-
-
         }
 
         private void checkCollisions(){
@@ -113,7 +119,7 @@ public class GameScreen extends Base2DScreen {
                     continue;
                 }
                for (Bullet bullet:bulletList){
-                    if (bullet.getOvner()!=ship || bullet.isDestroyed()){
+                    if (bullet.isDestroyed()){
                         continue;
                     }
                     if (sweetGoal.isBulletCollision(bullet)){
@@ -128,6 +134,7 @@ public class GameScreen extends Base2DScreen {
             bulletPool.freeAllDestroyedActiveSprites();
             explosionPool.freeAllDestroyedActiveSprites();
             sweetGoalPool.freeAllDestroyedActiveSprites();
+            inkPool.freeAllDestroyedActiveSprites();
             answersPool.freeAllDestroyedActiveSprites();
         }
 
@@ -142,6 +149,7 @@ public class GameScreen extends Base2DScreen {
             bulletPool.drawActiveSprites(batch);
             explosionPool.drawActiveSprites(batch);
             sweetGoalPool.drawActiveSprites(batch);
+            inkPool.drawActiveSprites(batch);
             if (!ship.isDestroyed()){
                 ship.draw(batch);
             }
@@ -170,6 +178,7 @@ public class GameScreen extends Base2DScreen {
             music.dispose();
             answersPool.dispose();
             sweetGoalPool.dispose();
+            inkPool.dispose();
             answers.dispose();
             super.dispose();
         }

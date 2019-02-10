@@ -27,7 +27,8 @@ public class Explosion extends Sprite {
         this.type=type;
         switch (type){
             case INK:
-
+                nFrames=12;
+                this.regions=Regions.split(atlas.findRegion("spray"),2,6,12);
                 break;
             case CAKE:
                 nFrames=14;

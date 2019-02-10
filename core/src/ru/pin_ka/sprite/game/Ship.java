@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import ru.pin_ka.math.Rect;
 import ru.pin_ka.pool.BulletPool;
@@ -21,6 +22,10 @@ public class Ship extends BaseShip {
     private boolean isBlocked=true;
     private Sound explosionSound;
     private Sound shootSound;
+    private BulletPool bulletPool;
+    private TextureRegion bulletRegion;
+    private Vector2 bulletV;
+    private float bulletHeight;
 
     public Ship(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool) {
         super(atlas.findRegion("ship"),1,2,2,explosionPool);
@@ -64,6 +69,11 @@ public class Ship extends BaseShip {
             setLeft(worldBounds.getLeft());
             stop();
         }
+    }
+
+    private void shoot() {
+        Bullet bullet = bulletPool.obtain();
+        bullet.set(bulletRegion, pos, bulletV, bulletHeight, worldBounds);
     }
 
     @Override

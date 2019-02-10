@@ -57,7 +57,7 @@ public class SweetGoal extends BaseShip {
                 }
                 if (getBottom()<=worldBounds.getBottom()||getRight()<=worldBounds.getLeft()) {
                     destroy();
-                    ship.destroy();
+                    ship.damage(1);
                 }
                 break;
         }
