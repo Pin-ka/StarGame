@@ -1,4 +1,4 @@
-package ru.pin_ka.sprite.menu;
+package ru.pin_ka.base;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;

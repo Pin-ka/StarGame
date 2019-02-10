@@ -10,7 +10,7 @@ public class Explosion extends Sprite {
 
     protected enum Type {CAKE,SHIP,INK};
 
-    private float animateInterval = 0.01f;
+    private float animateInterval = 0.03f;
     private float animateTimer;
     TextureAtlas atlas;
     Type type;
@@ -27,8 +27,8 @@ public class Explosion extends Sprite {
         this.type=type;
         switch (type){
             case INK:
-                nFrames=12;
-                this.regions=Regions.split(atlas.findRegion("spray"),2,6,12);
+                nFrames=10;
+                this.regions=Regions.split(atlas.findRegion("spray"),1,10,10);
                 break;
             case CAKE:
                 nFrames=14;

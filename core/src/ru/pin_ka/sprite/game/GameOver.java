@@ -8,7 +8,8 @@ public class GameOver extends Sprite {
 
     public GameOver(TextureAtlas atlas) {
         super(atlas.findRegion("gameOver"));
-        setHeightProportion(0.2f);
+        setHeightProportion(0.15f);
+        setBottom(0.7f);
     }
 
     @Override

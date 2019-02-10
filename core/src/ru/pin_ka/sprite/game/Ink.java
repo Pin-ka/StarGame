@@ -53,6 +53,7 @@ public class Ink extends BaseShip {
         switch (state){
             case COLLISION:
                 boom(Explosion.Type.INK);
+                ship.damage(1);
                 explosionSound.play();
                 state=State.NO_COLLISION;
                 break;

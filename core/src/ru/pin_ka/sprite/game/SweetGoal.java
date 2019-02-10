@@ -9,7 +9,6 @@ import ru.pin_ka.pool.ExplosionPool;
 public class SweetGoal extends BaseShip {
 
     private enum State {DESCENT,FLIGHT};
-
     private Vector2 v0=new Vector2();
     private Rect worldBounds;
     private State state;

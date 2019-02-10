@@ -20,14 +20,18 @@ import ru.pin_ka.sprite.CandyBg;
 import ru.pin_ka.sprite.game.Bullet;
 import ru.pin_ka.sprite.game.GameOver;
 import ru.pin_ka.sprite.game.Ink;
+import ru.pin_ka.sprite.game.NewGame;
 import ru.pin_ka.sprite.game.Ship;
 import ru.pin_ka.sprite.game.SweetGoal;
+import ru.pin_ka.sprite.menu.NameGame;
 import ru.pin_ka.utils.AnswersBuilding;
 import ru.pin_ka.utils.InkEmitter;
 import ru.pin_ka.utils.SweetGoalEmitter;
 import static ru.pin_ka.sprite.game.Ink.State.COLLISION;
 
 public class GameScreen extends Base2DScreen {
+
+        private enum State {PLAYING,GAME_OVER};
 
         private TextureAtlas atlas;
         private Texture bg;
@@ -44,6 +48,8 @@ public class GameScreen extends Base2DScreen {
         private AnswersBuilding answers;
         private Music music;
         private GameOver gameOver;
+        private NewGame newGame;
+        private State state;
 
         @Override
         public void show() {
@@ -61,7 +67,7 @@ public class GameScreen extends Base2DScreen {
             }
             bulletPool = new BulletPool();
             explosionPool = new ExplosionPool(atlas);
-            ship = new Ship(atlas, bulletPool,explosionPool);
+            ship = new Ship(atlas, bulletPool,explosionPool,worldBounds);
             sweetGoalPool=new SweetGoalPool(atlas,worldBounds,explosionPool,ship);
             inkPool=new InkPool(atlas,worldBounds,explosionPool,ship);
             sweetGoalEmitter=new SweetGoalEmitter(worldBounds);
@@ -69,6 +75,8 @@ public class GameScreen extends Base2DScreen {
             answersPool=new AnswersPool(atlas);
             answers=new AnswersBuilding(worldBounds);
             gameOver=new GameOver(atlas);
+            newGame=new NewGame(atlas,this);
+            startNewGame();
         }
 
         @Override
@@ -84,69 +92,79 @@ public class GameScreen extends Base2DScreen {
             for (CandyBg aCandyBg : candyBg) {
                 aCandyBg.update(delta);
             }
-            if (!ship.isDestroyed()) {
-                ship.update(delta);
+            explosionPool.updateActiveSprites(delta);
+            switch (state){
+                case PLAYING:
+                    ship.update(delta);
+                    bulletPool.updateActiveSprites(delta);
+                    sweetGoalPool.updateActiveSprites(delta);
+                    inkPool.updateActiveSprites(delta);
+                    sweetGoalEmitter.generate(sweetGoalPool);
+                    inkEmitter.generate(delta,inkPool);
+                    answers.buildAnswer(sweetGoalEmitter.getCurrentFrame(),answersPool,sweetGoalEmitter.isChange());
+                    if(sweetGoalEmitter.isChange()) {
+                        ship.setBlocked(true);
+                        answers.setBlocked(false);
+                    }
+                    answersPool.updateActiveSprites(delta);
+                    break;
+                case GAME_OVER:
+
+                    break;
             }
-                bulletPool.updateActiveSprites(delta);
-                explosionPool.updateActiveSprites(delta);
-                sweetGoalPool.updateActiveSprites(delta);
-                inkPool.updateActiveSprites(delta);
-                sweetGoalEmitter.generate(sweetGoalPool);
-                inkEmitter.generate(delta,inkPool);
-                answers.buildAnswer(sweetGoalEmitter.getCurrentFrame(),answersPool,sweetGoalEmitter.isChange());
-                if(sweetGoalEmitter.isChange()) {
-                    ship.setBlocked(true);
-                    answers.setBlocked(false);
-                }
-                answersPool.updateActiveSprites(delta);
         }
 
         private void checkCollisions(){
-            List <SweetGoal>sweetGoalList=sweetGoalPool.getActiveObjects();
-            for (SweetGoal sweetGoal:sweetGoalList){
-                if (sweetGoal.isDestroyed()){
-                    continue;
-                }
-                float minDist=sweetGoal.getHalfHeight()+ship.getHalfWidth();
-                if (sweetGoal.pos.dst2(ship.pos)<minDist*minDist){
-                    sweetGoal.destroy();
-                    ship.damage(sweetGoal.getDamage());
-                    return;
-                }
-            }
-
-            List <Ink> inkList=inkPool.getActiveObjects();
-            for (Ink ink:inkList){
-                if (ink.isDestroyed()){
-                    continue;
-                }
-                float minDist=ink.getHalfHeight()+ship.getHalfWidth();
-                if (ink.pos.dst2(ship.pos)<minDist*minDist){
-                    ink.setState(COLLISION);
-                    ink.destroy();
-                    ship.damage(ink.getDamage());
-                    return;
-                }
-            }
-
-            List <Bullet>bulletList=bulletPool.getActiveObjects();
-            for (SweetGoal sweetGoal:sweetGoalList){
-                if (sweetGoal.isDestroyed()){
-                    continue;
-                }
-               for (Bullet bullet:bulletList){
-                    if (bullet.isDestroyed()){
+            if (state==State.PLAYING) {
+                List<SweetGoal> sweetGoalList = sweetGoalPool.getActiveObjects();
+                for (SweetGoal sweetGoal : sweetGoalList) {
+                    if (sweetGoal.isDestroyed()) {
                         continue;
                     }
-                    if (sweetGoal.isBulletCollision(bullet)){
-                        sweetGoal.damage(ship.getDamage());
-                        bullet.destroy();
+                    float minDist = sweetGoal.getHalfHeight() + ship.getHalfWidth();
+                    if (sweetGoal.pos.dst2(ship.pos) < minDist * minDist) {
+                        sweetGoal.destroy();
+                        ship.damage(sweetGoal.getDamage());
+                        return;
                     }
-               }
+                }
+
+                List<Ink> inkList = inkPool.getActiveObjects();
+                for (Ink ink : inkList) {
+                    if (ink.isDestroyed()) {
+                        continue;
+                    }
+                    float minDist = ink.getHalfHeight() + ship.getHalfWidth();
+                    if (ink.pos.dst2(ship.pos) < minDist * minDist) {
+                        ink.setState(COLLISION);
+                        ink.destroy();
+                        ship.damage(ink.getDamage());
+                        return;
+                    }
+                }
+
+                List<Bullet> bulletList = bulletPool.getActiveObjects();
+                for (SweetGoal sweetGoal : sweetGoalList) {
+                    if (sweetGoal.isDestroyed()) {
+                        continue;
+                    }
+                    for (Bullet bullet : bulletList) {
+                        if (bullet.isDestroyed()) {
+                            continue;
+                        }
+                        if (sweetGoal.isBulletCollision(bullet)) {
+                            sweetGoal.damage(ship.getDamage());
+                            bullet.destroy();
+                        }
+                    }
+                }
             }
         }
 
         private void deleteAllDestroyed() {
+            if (ship.isDestroyed()){
+                state=State.GAME_OVER;
+            }
             bulletPool.freeAllDestroyedActiveSprites();
             explosionPool.freeAllDestroyedActiveSprites();
             sweetGoalPool.freeAllDestroyedActiveSprites();
@@ -162,14 +180,20 @@ public class GameScreen extends Base2DScreen {
             for (CandyBg aCandyBg : candyBg) {
                 aCandyBg.draw(batch);
             }
-            bulletPool.drawActiveSprites(batch);
-            explosionPool.drawActiveSprites(batch);
-            sweetGoalPool.drawActiveSprites(batch);
-            inkPool.drawActiveSprites(batch);
-            if (!ship.isDestroyed()){
-                ship.draw(batch);
+            switch (state){
+                case PLAYING:
+                    ship.draw(batch);
+                    bulletPool.drawActiveSprites(batch);
+                    sweetGoalPool.drawActiveSprites(batch);
+                    inkPool.drawActiveSprites(batch);
+                    answersPool.drawActiveSprites(batch);
+                    break;
+                case GAME_OVER:
+                    gameOver.draw(batch);
+                    newGame.draw(batch);
+                    break;
             }
-            answersPool.drawActiveSprites(batch);
+            explosionPool.drawActiveSprites(batch);
             batch.end();
         }
 
@@ -201,13 +225,15 @@ public class GameScreen extends Base2DScreen {
 
         @Override
         public boolean keyDown(int keycode) {
-                if (!ship.isDestroyed())ship.keyDown(keycode);
+                if (state==State.PLAYING){
+                    ship.keyDown(keycode);
+                }
             return super.keyDown(keycode);
         }
 
         @Override
         public boolean keyUp(int keycode) {
-            if (!ship.isDestroyed())ship.keyUp(keycode);
+            if (state==State.PLAYING)ship.keyUp(keycode);
             return super.keyUp(keycode);
         }
 
@@ -218,19 +244,37 @@ public class GameScreen extends Base2DScreen {
 
     @Override
         public boolean touchDown(Vector2 touch, int pointer) { ;
-            if (!ship.isDestroyed())ship.touchDown(touch, pointer);
-            answers.touchDown(touch, pointer);
+            if (state==State.PLAYING){
+                ship.touchDown(touch, pointer);
+                answers.touchDown(touch, pointer);
+            }else {
+                newGame.touchDown(touch,pointer);
+            }
             return super.touchDown(touch, pointer);
         }
 
-        @Override
+    @Override
         public boolean touchUp(Vector2 touch, int pointer) {
-            answers.touchUp(touch,pointer);
-            if (answers.isTrueAnsver()){
-                ship.setBlocked(false);
-                answers.setBlocked(true);
+
+            if (state==State.PLAYING) {
+                answers.touchUp(touch,pointer);
+                if (answers.isTrueAnsver()){
+                    ship.setBlocked(false);
+                    answers.setBlocked(true);
+                }
+                ship.touchUp(touch, pointer);
+            }else {
+                newGame.touchUp(touch,pointer);
             }
-            if (!ship.isDestroyed())ship.touchUp(touch, pointer);
             return super.touchUp(touch, pointer);
         }
+
+    public void startNewGame(){
+            state=State.PLAYING;
+            bulletPool.freeAllActiveObjects();
+            explosionPool.freeAllActiveObjects();
+            inkPool.freeAllActiveObjects();
+            sweetGoalPool.freeAllActiveObjects();
+            ship.startNewGame();
     }
+}

@@ -27,8 +27,9 @@ public class Ship extends BaseShip {
     private Vector2 bulletV;
     private float bulletHeight;
 
-    public Ship(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool) {
+    public Ship(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool,Rect worldBounds) {
         super(atlas.findRegion("ship"),1,2,2,explosionPool);
+        this.worldBounds=worldBounds;
         this.bulletRegion=atlas.findRegion("bullet");
         this.bulletPool = bulletPool;
         this.reloadInterval = 0.5f;
@@ -38,7 +39,14 @@ public class Ship extends BaseShip {
         this.bulletV = new Vector2(0, 0.5f);
         this.bulletHeight = 0.01f;
         this.damage = 1;
+        startNewGame();
+    }
+
+    public void startNewGame(){
+        stop();
+        pos.x=worldBounds.pos.x;
         this.hp = 10;
+        flushDestroy();
     }
 
     @Override

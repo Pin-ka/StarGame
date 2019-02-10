@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 
+import ru.pin_ka.base.ScaledTouchUpButton;
 import ru.pin_ka.math.Rect;
 import ru.pin_ka.screen.GameScreen;
 
