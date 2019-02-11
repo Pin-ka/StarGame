@@ -57,10 +57,14 @@ public class GameScreen extends Base2DScreen {
         private NewGame newGame;
         private State state;
         private Font font;
+        private Font fontLevel;
         private StringBuilder sbCakes=new StringBuilder();
         private StringBuilder sbLevel=new StringBuilder();
         private int cakes=0;
         private ArrayList <EnergyUnit> energyUnits;
+        private int currentLevel=1;
+        private float reloadTimer=0f;
+        private float reloadInterval=2f;
 
         @Override
         public void show() {
@@ -90,6 +94,8 @@ public class GameScreen extends Base2DScreen {
             newGame=new NewGame(atlas,this);
             this.font=new Font("fonts/font.fnt","fonts/font.png");
             this.font.setSize(0.02f);
+            this.fontLevel=new Font("fonts/font.fnt","fonts/font.png");
+            this.fontLevel.setSize(0.1f);
             startNewGame();
         }
 
@@ -122,6 +128,14 @@ public class GameScreen extends Base2DScreen {
                     }
                     if(ship.getHp()<energyUnits.size()){
                         energyUnits.remove(energyUnits.size()-1);
+                    }
+
+                    if (currentLevel!=sweetGoalEmitter.getLevel()){
+                        reloadTimer+=delta;
+                        if (reloadTimer>=reloadInterval){
+                            reloadTimer=0;
+                            currentLevel=sweetGoalEmitter.getLevel();
+                        }
                     }
                     answersPool.updateActiveSprites(delta);
                     break;
@@ -226,6 +240,10 @@ public class GameScreen extends Base2DScreen {
             sbLevel.setLength(0);
             font.draw(batch,sbCakes.append(CAKES).append(cakes),worldBounds.getRight()-0.01f,worldBounds.getTop()-0.07f,Align.right);
             font.draw(batch,sbLevel.append(LEVEL).append(sweetGoalEmitter.getLevel()),worldBounds.getRight()-0.01f,worldBounds.getTop()-0.11f,Align.right);
+            if (currentLevel!=sweetGoalEmitter.getLevel()){
+                sbLevel.setLength(0);
+                fontLevel.draw(batch,sbLevel.append(LEVEL).append(sweetGoalEmitter.getLevel()),worldBounds.pos.x,worldBounds.pos.y,Align.center);
+            }
         }
 
         @Override
