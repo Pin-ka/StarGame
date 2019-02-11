@@ -3,10 +3,10 @@ package ru.pin_ka.pool;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+
 import ru.pin_ka.base.SpritesPool;
 import ru.pin_ka.math.Rect;
 import ru.pin_ka.sprite.game.Ink;
-import ru.pin_ka.sprite.game.Ship;
 
 public class InkPool extends SpritesPool <Ink> {
 

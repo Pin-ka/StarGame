@@ -39,6 +39,5 @@ public abstract class ScaledTouchUpButton extends Sprite {
         scale=1f;
         return super.touchUp(touch, poiter);
     }
-
     public abstract void action();
 }

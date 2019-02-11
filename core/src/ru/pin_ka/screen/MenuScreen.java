@@ -54,18 +54,18 @@ public class MenuScreen extends Base2DScreen {
     }
 
     public void update(float delta){
-        for (int i=0;i<candyBg.length;i++){
-            candyBg[i].update(delta);
+        for (CandyBg aCandyBg : candyBg) {
+            aCandyBg.update(delta);
         }
     }
 
-    public void draw(){
+    private void draw(){
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         background.draw(batch);
-        for (int i=0;i<candyBg.length;i++){
-            candyBg[i].draw(batch);
+        for (CandyBg aCandyBg : candyBg) {
+            aCandyBg.draw(batch);
         }
         play.draw(batch);
         exit.draw(batch);
@@ -76,8 +76,8 @@ public class MenuScreen extends Base2DScreen {
     @Override
     public void resize(Rect worldBounds) {
         background.resize(worldBounds);
-        for (int i=0;i<candyBg.length;i++){
-            candyBg[i].resize(worldBounds);
+        for (CandyBg aCandyBg : candyBg) {
+            aCandyBg.resize(worldBounds);
         }
         play.resize(worldBounds);
         exit.resize(worldBounds);

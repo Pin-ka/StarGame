@@ -35,10 +35,9 @@ import static ru.pin_ka.sprite.game.Ink.State.COLLISION;
 
 public class GameScreen extends Base2DScreen {
 
-    private enum State {PLAYING,GAME_OVER};
+        private enum State {PLAYING,GAME_OVER};
         private static final String CAKES="Cakes: ";
         private static final String LEVEL="Level: ";
-
         private TextureAtlas atlas;
         private Texture bg;
         private Background background;
@@ -48,55 +47,62 @@ public class GameScreen extends Base2DScreen {
         private ExplosionPool explosionPool;
         private SweetGoalPool sweetGoalPool;
         private InkPool inkPool;
+        private AnswersPool answersPool;
         private InkEmitter inkEmitter;
         private SweetGoalEmitter sweetGoalEmitter;
-        private AnswersPool answersPool;
         private AnswersBuilding answers;
-        private Music music;
+
+        private State state;
+        private ArrayList <EnergyUnit> energyUnits;
+
         private GameOver gameOver;
         private NewGame newGame;
-        private State state;
+
+        private Music music;
+
         private Font font;
         private Font fontLevel;
         private StringBuilder sbCakes=new StringBuilder();
         private StringBuilder sbLevel=new StringBuilder();
+
         private int cakes=0;
-        private ArrayList <EnergyUnit> energyUnits;
         private int currentLevel=1;
         private float reloadTimer=0f;
-        private float reloadInterval=2f;
 
-        @Override
+    @Override
         public void show() {
             super.show();
-            music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
-            music.setLooping(true);
-            music.setVolume(0.8f);
-            music.play();
-            bg = new Texture("textures/bg.jpg");
-            background = new Background(new TextureRegion(bg));
-            atlas = new TextureAtlas("textures/mainAtlas.tpack");
-            candyBg = new CandyBg[25];
-            for (int i = 0; i < candyBg.length; i++) {
-                candyBg[i] = new CandyBg(atlas);
-            }
-            energyUnits =new ArrayList<EnergyUnit>();
-            bulletPool = new BulletPool();
-            explosionPool = new ExplosionPool(atlas);
-            ship = new Ship(atlas, bulletPool,explosionPool,worldBounds);
-            sweetGoalPool=new SweetGoalPool(atlas,worldBounds,explosionPool,ship);
-            inkPool=new InkPool(atlas,worldBounds,explosionPool);
-            sweetGoalEmitter=new SweetGoalEmitter(worldBounds);
-            inkEmitter=new InkEmitter(worldBounds);
-            answersPool=new AnswersPool(atlas);
-            answers=new AnswersBuilding(worldBounds);
-            gameOver=new GameOver(atlas);
-            newGame=new NewGame(atlas,this);
-            this.font=new Font("fonts/font.fnt","fonts/font.png");
-            this.font.setSize(0.02f);
-            this.fontLevel=new Font("fonts/font.fnt","fonts/font.png");
-            this.fontLevel.setSize(0.1f);
-            startNewGame();
+
+        super.show();
+        music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
+        music.setLooping(true);
+        music.setVolume(0.8f);
+        music.play();
+        bg = new Texture("textures/bg.jpg");
+        background = new Background(new TextureRegion(bg));
+        atlas = new TextureAtlas("textures/mainAtlas.tpack");
+        candyBg = new CandyBg[25];
+        for (int i = 0; i < candyBg.length; i++) {
+            candyBg[i] = new CandyBg(atlas);
+        }
+        bulletPool = new BulletPool();
+        explosionPool = new ExplosionPool(atlas);
+        ship = new Ship(atlas, bulletPool,explosionPool,worldBounds);
+        sweetGoalPool=new SweetGoalPool(atlas,worldBounds,explosionPool,ship);
+        sweetGoalEmitter=new SweetGoalEmitter(worldBounds);
+        answersPool=new AnswersPool(atlas);
+        answers=new AnswersBuilding(worldBounds);
+        gameOver=new GameOver(atlas);
+        energyUnits =new ArrayList<EnergyUnit>();
+        inkPool=new InkPool(atlas,worldBounds,explosionPool);
+        inkEmitter=new InkEmitter(worldBounds);
+        gameOver=new GameOver(atlas);
+        newGame=new NewGame(atlas,this);
+        this.font=new Font("fonts/font.fnt","fonts/font.png");
+        this.font.setSize(0.02f);
+        this.fontLevel=new Font("fonts/font.fnt","fonts/font.png");
+        this.fontLevel.setSize(0.1f);
+        startNewGame();
         }
 
         @Override
@@ -119,6 +125,7 @@ public class GameScreen extends Base2DScreen {
                     bulletPool.updateActiveSprites(delta);
                     sweetGoalPool.updateActiveSprites(delta);
                     inkPool.updateActiveSprites(delta);
+                    answersPool.updateActiveSprites(delta);
                     sweetGoalEmitter.generate(sweetGoalPool,cakes);
                     inkEmitter.generate(delta,inkPool,sweetGoalEmitter.getLevel());
                     answers.buildAnswer(sweetGoalEmitter.getCurrentFrame(),answersPool,sweetGoalEmitter.isChange());
@@ -129,15 +136,14 @@ public class GameScreen extends Base2DScreen {
                     if(ship.getHp()<energyUnits.size()){
                         energyUnits.remove(energyUnits.size()-1);
                     }
-
                     if (currentLevel!=sweetGoalEmitter.getLevel()){
                         reloadTimer+=delta;
-                        if (reloadTimer>=reloadInterval){
+                        float reloadInterval = 2f;
+                        if (reloadTimer>= reloadInterval){
                             reloadTimer=0;
                             currentLevel=sweetGoalEmitter.getLevel();
                         }
                     }
-                    answersPool.updateActiveSprites(delta);
                     break;
             }
         }
@@ -235,7 +241,7 @@ public class GameScreen extends Base2DScreen {
             batch.end();
         }
 
-        public void printInfo(){
+        private void printInfo(){
             sbCakes.setLength(0);
             sbLevel.setLength(0);
             font.draw(batch,sbCakes.append(CAKES).append(cakes),worldBounds.getRight()-0.01f,worldBounds.getTop()-0.07f,Align.right);

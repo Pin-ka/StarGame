@@ -18,10 +18,10 @@ public abstract class BaseShip extends Sprite {
         protected float damageTimer=damageInterval;
         protected ExplosionPool explosionPool;
 
-        public BaseShip(TextureRegion region, int rows, int cols, int frames,ExplosionPool explosionPool) {
+    public BaseShip(TextureRegion region, int rows, int cols, int frames,ExplosionPool explosionPool) {
             super(region, rows, cols, frames);
             this.explosionPool=explosionPool;
-        }
+    }
 
     public BaseShip(TextureRegion region, ExplosionPool explosionPool) {
         super(region);
