@@ -45,7 +45,7 @@ public class SweetGoal extends BaseShip {
         this.pos.mulAdd(v,delta);
         switch (state){
             case DESCENT:
-                if(getTop()<=worldBounds.getTop()){
+                if(getTop()<=worldBounds.getTop()-0.05f){
                     v.set(v0);
                     state=State.FLIGHT;
                 }

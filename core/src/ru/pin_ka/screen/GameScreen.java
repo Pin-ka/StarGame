@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 
+import java.util.ArrayList;
 import java.util.List;
 import ru.pin_ka.base.Base2DScreen;
 import ru.pin_ka.math.Rect;
@@ -20,6 +21,7 @@ import ru.pin_ka.pool.SweetGoalPool;
 import ru.pin_ka.sprite.Background;
 import ru.pin_ka.sprite.CandyBg;
 import ru.pin_ka.sprite.game.Bullet;
+import ru.pin_ka.sprite.game.EnergyUnit;
 import ru.pin_ka.sprite.game.GameOver;
 import ru.pin_ka.sprite.game.Ink;
 import ru.pin_ka.sprite.game.NewGame;
@@ -33,9 +35,8 @@ import static ru.pin_ka.sprite.game.Ink.State.COLLISION;
 
 public class GameScreen extends Base2DScreen {
 
-        private enum State {PLAYING,GAME_OVER};
+    private enum State {PLAYING,GAME_OVER};
         private static final String CAKES="Cakes: ";
-        private static final String ENERGY="Energy: ";
         private static final String LEVEL="Level: ";
 
         private TextureAtlas atlas;
@@ -57,9 +58,9 @@ public class GameScreen extends Base2DScreen {
         private State state;
         private Font font;
         private StringBuilder sbCakes=new StringBuilder();
-        private StringBuilder sbEnergy=new StringBuilder();
         private StringBuilder sbLevel=new StringBuilder();
-        int cakes=0;
+        private int cakes=0;
+        private ArrayList <EnergyUnit> energyUnits;
 
         @Override
         public void show() {
@@ -75,6 +76,7 @@ public class GameScreen extends Base2DScreen {
             for (int i = 0; i < candyBg.length; i++) {
                 candyBg[i] = new CandyBg(atlas);
             }
+            energyUnits =new ArrayList<EnergyUnit>();
             bulletPool = new BulletPool();
             explosionPool = new ExplosionPool(atlas);
             ship = new Ship(atlas, bulletPool,explosionPool,worldBounds);
@@ -118,10 +120,10 @@ public class GameScreen extends Base2DScreen {
                         ship.setBlocked(true);
                         answers.setBlocked(false);
                     }
+                    if(ship.getHp()<energyUnits.size()){
+                        energyUnits.remove(energyUnits.size()-1);
+                    }
                     answersPool.updateActiveSprites(delta);
-                    break;
-                case GAME_OVER:
-
                     break;
             }
         }
@@ -195,6 +197,9 @@ public class GameScreen extends Base2DScreen {
             for (CandyBg aCandyBg : candyBg) {
                 aCandyBg.draw(batch);
             }
+            for (EnergyUnit energyUnit : energyUnits) {
+                energyUnit.draw(batch);
+            }
             switch (state){
                 case PLAYING:
                     ship.draw(batch);
@@ -209,26 +214,31 @@ public class GameScreen extends Base2DScreen {
                     break;
             }
             explosionPool.drawActiveSprites(batch);
+            for (EnergyUnit energyUnit : energyUnits) {
+                energyUnit.draw(batch);
+            }
             printInfo();
             batch.end();
         }
 
         public void printInfo(){
             sbCakes.setLength(0);
-            sbEnergy.setLength(0);
             sbLevel.setLength(0);
-            font.draw(batch,sbCakes.append(CAKES).append(cakes),worldBounds.getLeft(),worldBounds.getTop());
-            font.draw(batch,sbEnergy.append(ENERGY).append(ship.getHp()),worldBounds.pos.x,worldBounds.getTop(),Align.center);
-            font.draw(batch,sbLevel.append(LEVEL).append(sweetGoalEmitter.getLevel()),worldBounds.getRight(),worldBounds.getTop(),Align.right);
+            font.draw(batch,sbCakes.append(CAKES).append(cakes),worldBounds.getRight()-0.01f,worldBounds.getTop()-0.07f,Align.right);
+            font.draw(batch,sbLevel.append(LEVEL).append(sweetGoalEmitter.getLevel()),worldBounds.getRight()-0.01f,worldBounds.getTop()-0.11f,Align.right);
         }
 
         @Override
         public void resize(Rect worldBounds) {
             super.resize(worldBounds);
             background.resize(worldBounds);
-            for (CandyBg aCandyBg : candyBg) {
-                aCandyBg.resize(worldBounds);
+            for (CandyBg candyBg : candyBg) {
+                candyBg.resize(worldBounds);
             }
+            for (int i=0;i<ship.getHp();i++) {
+                energyUnits.get(i).resize(worldBounds,i);
+            }
+
             ship.resize(worldBounds);
             gameOver.resize(worldBounds);
         }
@@ -304,5 +314,9 @@ public class GameScreen extends Base2DScreen {
             inkPool.freeAllActiveObjects();
             sweetGoalPool.freeAllActiveObjects();
             ship.startNewGame();
+            for (int i = 0; i < ship.getHp(); i++) {
+                 energyUnits.add(new EnergyUnit(atlas));
+                energyUnits.get(i).resize(worldBounds,i);
+            }
     }
 }
