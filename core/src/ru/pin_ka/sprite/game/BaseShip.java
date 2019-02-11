@@ -57,4 +57,8 @@ public abstract class BaseShip extends Sprite {
             Explosion explosion=explosionPool.obtain();
             explosion.set(getHeight(),pos,type);
     }
+
+    public int getHp() {
+        return hp;
+    }
 }

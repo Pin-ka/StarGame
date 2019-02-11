@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Align;
+
 import java.util.List;
 import ru.pin_ka.base.Base2DScreen;
 import ru.pin_ka.math.Rect;
@@ -23,8 +25,8 @@ import ru.pin_ka.sprite.game.Ink;
 import ru.pin_ka.sprite.game.NewGame;
 import ru.pin_ka.sprite.game.Ship;
 import ru.pin_ka.sprite.game.SweetGoal;
-import ru.pin_ka.sprite.menu.NameGame;
 import ru.pin_ka.utils.AnswersBuilding;
+import ru.pin_ka.utils.Font;
 import ru.pin_ka.utils.InkEmitter;
 import ru.pin_ka.utils.SweetGoalEmitter;
 import static ru.pin_ka.sprite.game.Ink.State.COLLISION;
@@ -32,6 +34,9 @@ import static ru.pin_ka.sprite.game.Ink.State.COLLISION;
 public class GameScreen extends Base2DScreen {
 
         private enum State {PLAYING,GAME_OVER};
+        private static final String CAKES="Cakes: ";
+        private static final String ENERGY="Energy: ";
+        private static final String LEVEL="Level: ";
 
         private TextureAtlas atlas;
         private Texture bg;
@@ -50,6 +55,11 @@ public class GameScreen extends Base2DScreen {
         private GameOver gameOver;
         private NewGame newGame;
         private State state;
+        private Font font;
+        private StringBuilder sbCakes=new StringBuilder();
+        private StringBuilder sbEnergy=new StringBuilder();
+        private StringBuilder sbLevel=new StringBuilder();
+        int cakes=0;
 
         @Override
         public void show() {
@@ -69,13 +79,15 @@ public class GameScreen extends Base2DScreen {
             explosionPool = new ExplosionPool(atlas);
             ship = new Ship(atlas, bulletPool,explosionPool,worldBounds);
             sweetGoalPool=new SweetGoalPool(atlas,worldBounds,explosionPool,ship);
-            inkPool=new InkPool(atlas,worldBounds,explosionPool,ship);
+            inkPool=new InkPool(atlas,worldBounds,explosionPool);
             sweetGoalEmitter=new SweetGoalEmitter(worldBounds);
             inkEmitter=new InkEmitter(worldBounds);
             answersPool=new AnswersPool(atlas);
             answers=new AnswersBuilding(worldBounds);
             gameOver=new GameOver(atlas);
             newGame=new NewGame(atlas,this);
+            this.font=new Font("fonts/font.fnt","fonts/font.png");
+            this.font.setSize(0.02f);
             startNewGame();
         }
 
@@ -154,6 +166,9 @@ public class GameScreen extends Base2DScreen {
                         }
                         if (sweetGoal.isBulletCollision(bullet)) {
                             sweetGoal.damage(ship.getDamage());
+                                if (sweetGoal.isDestroyed()){
+                                    cakes++;
+                                }
                             bullet.destroy();
                         }
                     }
@@ -194,7 +209,17 @@ public class GameScreen extends Base2DScreen {
                     break;
             }
             explosionPool.drawActiveSprites(batch);
+            printInfo();
             batch.end();
+        }
+
+        public void printInfo(){
+            sbCakes.setLength(0);
+            sbEnergy.setLength(0);
+            sbLevel.setLength(0);
+            font.draw(batch,sbCakes.append(CAKES).append(cakes),worldBounds.getLeft(),worldBounds.getTop());
+            font.draw(batch,sbEnergy.append(ENERGY).append(ship.getHp()),worldBounds.pos.x,worldBounds.getTop(),Align.center);
+            font.draw(batch,sbLevel.append(LEVEL).append(1),worldBounds.getRight(),worldBounds.getTop(),Align.right);
         }
 
         @Override
@@ -220,6 +245,7 @@ public class GameScreen extends Base2DScreen {
             sweetGoalPool.dispose();
             inkPool.dispose();
             answers.dispose();
+            font.dispose();
             super.dispose();
         }
 
@@ -270,6 +296,7 @@ public class GameScreen extends Base2DScreen {
         }
 
     public void startNewGame(){
+            cakes=0;
             state=State.PLAYING;
             bulletPool.freeAllActiveObjects();
             explosionPool.freeAllActiveObjects();

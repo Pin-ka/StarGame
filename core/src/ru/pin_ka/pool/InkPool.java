@@ -13,21 +13,19 @@ public class InkPool extends SpritesPool <Ink> {
     private TextureAtlas atlas;
     private Rect worldBounds;
     private ExplosionPool explosionPool;
-    private Ship ship;
     private Sound explosionSound;
 
-    public InkPool (TextureAtlas atlas,Rect worldBounds, ExplosionPool explosionPool, Ship ship) {
+    public InkPool (TextureAtlas atlas,Rect worldBounds, ExplosionPool explosionPool) {
         this.atlas=atlas;
         this.explosionPool=explosionPool;
         this.worldBounds=worldBounds;
-        this.ship=ship;
         this.explosionSound=Gdx.audio.newSound(Gdx.files.internal("sounds/ou.wav"));
     }
 
 
     @Override
     protected Ink newObject() {
-        return new Ink(atlas,worldBounds,explosionPool,ship,explosionSound);
+        return new Ink(atlas,worldBounds,explosionPool,explosionSound);
     }
 
     @Override

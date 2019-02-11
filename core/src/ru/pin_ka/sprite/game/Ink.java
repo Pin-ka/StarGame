@@ -13,15 +13,13 @@ public class Ink extends BaseShip {
     private Rect worldBounds;
     private Vector2 v=new Vector2();
     private Sound explosionSound;
-    private Ship ship;
     private State state;
 
-    public Ink(TextureAtlas atlas, Rect worldBounds, ExplosionPool explosionPool, Ship ship, Sound explosionSound) {
+    public Ink(TextureAtlas atlas, Rect worldBounds, ExplosionPool explosionPool, Sound explosionSound) {
         super(atlas.findRegion("ink"),explosionPool);
         this.v.set(v);
         this.worldBounds=worldBounds;
         this.explosionPool=explosionPool;
-        this.ship=ship;
         this.explosionSound = explosionSound;
         this.damage=1;
         setHeightProportion(0.15f);
@@ -53,7 +51,6 @@ public class Ink extends BaseShip {
         switch (state){
             case COLLISION:
                 boom(Explosion.Type.INK);
-                ship.damage(1);
                 explosionSound.play();
                 state=State.NO_COLLISION;
                 break;
