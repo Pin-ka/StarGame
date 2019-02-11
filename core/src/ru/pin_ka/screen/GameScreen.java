@@ -111,8 +111,8 @@ public class GameScreen extends Base2DScreen {
                     bulletPool.updateActiveSprites(delta);
                     sweetGoalPool.updateActiveSprites(delta);
                     inkPool.updateActiveSprites(delta);
-                    sweetGoalEmitter.generate(sweetGoalPool);
-                    inkEmitter.generate(delta,inkPool);
+                    sweetGoalEmitter.generate(sweetGoalPool,cakes);
+                    inkEmitter.generate(delta,inkPool,sweetGoalEmitter.getLevel());
                     answers.buildAnswer(sweetGoalEmitter.getCurrentFrame(),answersPool,sweetGoalEmitter.isChange());
                     if(sweetGoalEmitter.isChange()) {
                         ship.setBlocked(true);
@@ -146,7 +146,7 @@ public class GameScreen extends Base2DScreen {
                     if (ink.isDestroyed()) {
                         continue;
                     }
-                    float minDist = ink.getHalfHeight() + ship.getHalfWidth();
+                    float minDist = (ink.getHalfHeight() + ship.getHalfWidth())/2;
                     if (ink.pos.dst2(ship.pos) < minDist * minDist) {
                         ink.setState(COLLISION);
                         ink.destroy();
@@ -219,7 +219,7 @@ public class GameScreen extends Base2DScreen {
             sbLevel.setLength(0);
             font.draw(batch,sbCakes.append(CAKES).append(cakes),worldBounds.getLeft(),worldBounds.getTop());
             font.draw(batch,sbEnergy.append(ENERGY).append(ship.getHp()),worldBounds.pos.x,worldBounds.getTop(),Align.center);
-            font.draw(batch,sbLevel.append(LEVEL).append(1),worldBounds.getRight(),worldBounds.getTop(),Align.right);
+            font.draw(batch,sbLevel.append(LEVEL).append(sweetGoalEmitter.getLevel()),worldBounds.getRight(),worldBounds.getTop(),Align.right);
         }
 
         @Override
@@ -297,6 +297,7 @@ public class GameScreen extends Base2DScreen {
 
     public void startNewGame(){
             cakes=0;
+            sweetGoalEmitter.setLevel(1);
             state=State.PLAYING;
             bulletPool.freeAllActiveObjects();
             explosionPool.freeAllActiveObjects();

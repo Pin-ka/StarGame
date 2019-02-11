@@ -22,7 +22,7 @@ public class Ink extends BaseShip {
         this.explosionPool=explosionPool;
         this.explosionSound = explosionSound;
         this.damage=1;
-        setHeightProportion(0.15f);
+        setHeightProportion(0.13f);
         state = State.NO_COLLISION;
     }
 

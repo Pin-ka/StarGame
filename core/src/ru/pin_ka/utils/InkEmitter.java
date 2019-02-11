@@ -11,17 +11,18 @@ public class InkEmitter {
 
     private int  damage=1;
     private Random random=new Random();
-    private Vector2 goalSmallV=new Vector2(0,-0.2f);
+    private Vector2 goalSmallV=new Vector2(0,-0.1f);
     private Rect worldBounds;
-    private float generateInterval=8f;
+    private float generateInterval;
     private float generateTimer;
 
     public InkEmitter(Rect worldBounds) {
         this.worldBounds=worldBounds;
     }
 
-    public void generate (float delta,InkPool inkPool){
+    public void generate (float delta,InkPool inkPool,int level){
         generateTimer+=delta;
+        generateInterval= 8f/level;
         if (generateTimer>=generateInterval){
             generateTimer=0f;
             Ink ink= inkPool.obtain();
