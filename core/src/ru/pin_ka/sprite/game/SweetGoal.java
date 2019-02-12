@@ -13,7 +13,6 @@ public class SweetGoal extends BaseShip {
     private Rect worldBounds;
     private State state;
     private Vector2 descentV=new Vector2(0,-0.15f);
-    private Vector2 vDamage=new Vector2(-0.5f,-0.1f);
     private Ship ship;
     private Sound explosionSound;
 
@@ -45,6 +44,7 @@ public class SweetGoal extends BaseShip {
         this.pos.mulAdd(v,delta);
         switch (state){
             case DESCENT:
+                setHeightProportion(0.15f);
                 if(getTop()<=worldBounds.getTop()-0.05f){
                     v.set(v0);
                     state=State.FLIGHT;
@@ -52,7 +52,7 @@ public class SweetGoal extends BaseShip {
                 break;
             case FLIGHT:
                 if (damageTimer>=damageInterval){
-                    v.set(v0);
+                   setHeightProportion(0.15f);
                 }
                 if (getBottom()<=worldBounds.getBottom()||getRight()<=worldBounds.getLeft()) {
                     ship.damage(1);
@@ -65,13 +65,7 @@ public class SweetGoal extends BaseShip {
     @Override
     public void damage(int damage) {
         super.damage(damage);
-        v.set(vDamage);
-        if(getLeft()<=worldBounds.getLeft()){
-           vDamage.set(0.5f,-0.1f);
-        }
-        if(getRight()>=worldBounds.getRight()){
-            vDamage.set(-0.5f,-0.1f);
-        }
+        setHeightProportion(0.1f);
         damageTimer=0f;
     }
 
