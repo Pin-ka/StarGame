@@ -40,10 +40,10 @@ public class AnswersBuilding {
                 answers.add(answer);
                 if (i%2==0){
                     answer.pos.x = worldBounds.getLeft() + answer.getHalfWidth();
-                    answer.pos.y = worldBounds.getBottom() + answer.getHalfHeight()+answer.getHeight()*i;
+                    answer.pos.y = worldBounds.getBottom() + answer.getHalfHeight()+answer.getHeight()*i+0.07f;
                 }else {
                     answer.pos.x = worldBounds.getRight() - answer.getHalfWidth();
-                    answer.pos.y = worldBounds.getBottom() - answer.getHalfHeight()+answer.getHeight()*i;
+                    answer.pos.y = worldBounds.getBottom() - answer.getHalfHeight()+answer.getHeight()*i+0.07f;
                 }
             }
             frames.clear();

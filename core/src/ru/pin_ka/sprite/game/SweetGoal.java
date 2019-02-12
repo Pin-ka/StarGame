@@ -45,7 +45,7 @@ public class SweetGoal extends BaseShip {
         switch (state){
             case DESCENT:
                 setHeightProportion(0.15f);
-                if(getTop()<=worldBounds.getTop()-0.05f){
+                if(getTop()<=worldBounds.getTop()){
                     v.set(v0);
                     state=State.FLIGHT;
                 }

@@ -21,7 +21,7 @@ public class EnergyUnit extends Sprite {
     public void resize(Rect worldBounds,int i) {
         this.worldBounds=worldBounds;
         float posX = worldBounds.getLeft()+0.05f+worldBounds.getHalfHeight() / 0.37f*getHalfHeight() * (i);
-        float posY=worldBounds.getTop()-this.getHalfHeight();
+        float posY=worldBounds.getBottom()+this.getHalfHeight();
         pos.set(posX,posY);
     }
 

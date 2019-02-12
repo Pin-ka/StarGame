@@ -15,6 +15,6 @@ public class NameGame extends Sprite {
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
         setTop(worldBounds.getTop()-0.05f);
-        setLeft(worldBounds.getLeft()+0.05f);
+        setLeft(worldBounds.getLeft()+0.01f);
     }
 }

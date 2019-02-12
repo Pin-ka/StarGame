@@ -132,6 +132,7 @@ public class GameScreen extends Base2DScreen {
                     if(sweetGoalEmitter.isChange()) {
                         ship.setBlocked(true);
                         answers.setBlocked(false);
+                        bulletPool.freeAllActiveObjects();
                     }
                     if(ship.getHp()<energyUnits.size()){
                         energyUnits.remove(energyUnits.size()-1);
@@ -244,8 +245,8 @@ public class GameScreen extends Base2DScreen {
         private void printInfo(){
             sbCakes.setLength(0);
             sbLevel.setLength(0);
-            font.draw(batch,sbCakes.append(CAKES).append(cakes),worldBounds.getRight()-0.01f,worldBounds.getTop()-0.07f,Align.right);
-            font.draw(batch,sbLevel.append(LEVEL).append(sweetGoalEmitter.getLevel()),worldBounds.getRight()-0.01f,worldBounds.getTop()-0.11f,Align.right);
+            font.draw(batch,sbCakes.append(CAKES).append(cakes),worldBounds.getRight()-0.01f,worldBounds.getBottom()+0.03f,Align.right);
+            font.draw(batch,sbLevel.append(LEVEL).append(sweetGoalEmitter.getLevel()),worldBounds.getLeft()+0.01f,worldBounds.getBottom()+0.03f,Align.left);
             if (currentLevel!=sweetGoalEmitter.getLevel()){
                 sbLevel.setLength(0);
                 fontLevel.draw(batch,sbLevel.append(LEVEL).append(sweetGoalEmitter.getLevel()),worldBounds.pos.x,worldBounds.pos.y,Align.center);

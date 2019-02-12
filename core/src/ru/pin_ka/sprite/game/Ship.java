@@ -52,7 +52,7 @@ public class Ship extends BaseShip {
     @Override
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
-        setBottom(worldBounds.getBottom()+0.01f);
+        setBottom(worldBounds.getBottom()+0.07f);
     }
 
     @Override
