@@ -1,14 +1,13 @@
 package ru.pin_ka.base;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class SpritesPool<T extends Sprite> {
 
-    protected List <T> activeObjects=new ArrayList<T>();
-    protected List <T> freeObjects=new ArrayList<T>();
+    private List <T> activeObjects=new ArrayList<T>();
+    private List <T> freeObjects=new ArrayList<T>();
 
     protected abstract T newObject();
 
@@ -47,7 +46,12 @@ public abstract class SpritesPool<T extends Sprite> {
         }
     }
 
-    public void free (T object){
+    public void freeAllActiveObjects(){
+        freeObjects.addAll(activeObjects);
+        activeObjects.clear();
+    }
+
+    private void free(T object){
         activeObjects.remove(object);
         freeObjects.add(object);
         object.flushDestroy();
@@ -60,5 +64,6 @@ public abstract class SpritesPool<T extends Sprite> {
     public void dispose(){
         activeObjects.clear();
         freeObjects.clear();
+
     }
 }

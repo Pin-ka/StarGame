@@ -2,9 +2,8 @@ package ru.pin_ka.sprite.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 
+import ru.pin_ka.base.ScaledTouchUpButton;
 import ru.pin_ka.math.Rect;
 
 public class ButtonExit extends ScaledTouchUpButton {

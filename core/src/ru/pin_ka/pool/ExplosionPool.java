@@ -1,30 +1,20 @@
 package ru.pin_ka.pool;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
 import ru.pin_ka.base.SpritesPool;
-import ru.pin_ka.sprite.game.ExplosionCake;
+import ru.pin_ka.sprite.game.Explosion;
 
-public class ExplosionPool extends SpritesPool<ExplosionCake> {
+public class ExplosionPool extends SpritesPool<Explosion> {
 
-    private TextureRegion region;
-    private Sound explosionSound;
+    TextureAtlas atlas;
 
     public ExplosionPool(TextureAtlas atlas) {
-        this.region = atlas.findRegion("expCake");
-        this.explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/expCake.wav"));
+        this.atlas=atlas;
     }
 
     @Override
-    protected ExplosionCake newObject() {
-        return new ExplosionCake(region, 2, 7, 14, explosionSound);
+    protected Explosion newObject() {
+        return new Explosion(atlas);
     }
 
-    public void dispose() {
-        explosionSound.dispose();
-        super.dispose();
-    }
 }

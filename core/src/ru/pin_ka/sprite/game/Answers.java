@@ -58,7 +58,7 @@ public class Answers extends Sprite {
         return super.touchUp(touch, poiter);
     }
 
-    public void action(int currentFrame){
+    private void action(int currentFrame){
 
         if (currentFrame!=frame){
             falseAnswer.play();

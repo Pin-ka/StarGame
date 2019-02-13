@@ -16,7 +16,6 @@ public abstract class Base2DScreen implements Screen, InputProcessor {
     private Rect screenBounds;
     protected Rect worldBounds;
     private Rect glBounds;
-
     private Matrix4 worldToGl;
     private Matrix3 screenToWorlds;
 
@@ -36,7 +35,6 @@ public abstract class Base2DScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-
     }
 
     @Override
@@ -61,17 +59,14 @@ public abstract class Base2DScreen implements Screen, InputProcessor {
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
         dispose();
     }
 
@@ -112,16 +107,6 @@ public abstract class Base2DScreen implements Screen, InputProcessor {
         return false;
     }
     public boolean touchUp(Vector2 touch, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        touch.set(screenX,screenBounds.getHeight()-screenY).mul(screenToWorlds);
-        touchDragged(touch,pointer);
-        return false;
-    }
-    public boolean touchDragged(Vector2 touch, int pointer) {
         return false;
     }
 

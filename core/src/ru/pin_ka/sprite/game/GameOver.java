@@ -1,7 +1,6 @@
 package ru.pin_ka.sprite.game;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-
 import ru.pin_ka.base.Sprite;
 import ru.pin_ka.math.Rect;
 
@@ -9,7 +8,8 @@ public class GameOver extends Sprite {
 
     public GameOver(TextureAtlas atlas) {
         super(atlas.findRegion("gameOver"));
-        setHeightProportion(0.2f);
+        setHeightProportion(0.15f);
+        setBottom(0.7f);
     }
 
     @Override

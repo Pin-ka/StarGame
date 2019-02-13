@@ -9,7 +9,6 @@ public class Rect {
     public  final Vector2 pos=new Vector2();
 
     public  Rect (){
-
     }
 
     public Rect(Rect from){
@@ -46,7 +45,7 @@ public class Rect {
         return halfHeight;
     }
 
-    public float getWidth() {
+    protected float getWidth() {
         return halfWidth * 2f;
     }
 
@@ -64,11 +63,11 @@ public class Rect {
         pos.x = left + halfWidth;
     }
 
-    public void setTop(float top) {
+    protected void setTop(float top) {
         pos.y = top - halfHeight;
     }
 
-    public void setRight(float right) {
+    protected void setRight(float right) {
         pos.x = right - halfWidth;
     }
 
@@ -89,11 +88,11 @@ public class Rect {
         this.halfHeight = height / 2f;
     }
 
-    public boolean isMe(Vector2 touch) {
+    protected boolean isMe(Vector2 touch) {
         return touch.x >= getLeft() && touch.x <= getRight() && touch.y >= getBottom() && touch.y <= getTop();
     }
 
-    public boolean isOutside(Rect other) {
+    protected boolean isOutside(Rect other) {
         return getLeft() > other.getRight() || getRight() < other.getLeft() || getBottom() > other.getTop() || getTop() < other.getBottom();
     }
 

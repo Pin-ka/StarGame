@@ -2,7 +2,9 @@ package ru.pin_ka.sprite.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import ru.pin_ka.math.Rect;
 import ru.pin_ka.pool.BulletPool;
@@ -18,21 +20,33 @@ public class Ship extends BaseShip {
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
     private boolean isBlocked=true;
-    private ExplosionShip explosionShip;
+    private Sound explosionSound;
+    private Sound shootSound;
+    private BulletPool bulletPool;
+    private TextureRegion bulletRegion;
+    private Vector2 bulletV;
+    private float bulletHeight;
 
-
-    public Ship(TextureAtlas atlas, BulletPool bulletPool, ExplosionShip explosionShip) {
-        super(atlas.findRegion("ship"),1,2,2);
+    public Ship(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool,Rect worldBounds) {
+        super(atlas.findRegion("ship"),1,2,2,explosionPool);
+        this.worldBounds=worldBounds;
         this.bulletRegion=atlas.findRegion("bullet");
         this.bulletPool = bulletPool;
         this.reloadInterval = 0.5f;
         this.shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shlep.wav"));
-        this.explosionShip=explosionShip;
+        this.explosionSound=Gdx.audio.newSound(Gdx.files.internal("sounds/expShip.wav"));
         setHeightProportion(0.15f);
         this.bulletV = new Vector2(0, 0.5f);
         this.bulletHeight = 0.01f;
         this.damage = 1;
+        startNewGame();
+    }
+
+    public void startNewGame(){
+        stop();
+        pos.x=worldBounds.pos.x;
         this.hp = 10;
+        flushDestroy();
     }
 
     @Override
@@ -40,7 +54,6 @@ public class Ship extends BaseShip {
         super.resize(worldBounds);
         setBottom(worldBounds.getBottom()+0.01f);
     }
-
 
     @Override
     public void update(float delta) {
@@ -53,6 +66,8 @@ public class Ship extends BaseShip {
         if (reloadTimer >= reloadInterval && !isBlocked) {
             reloadTimer = 0f;
             shoot();
+            shootSound.play();
+
         }
         if (getRight() > worldBounds.getRight()) {
             setRight(worldBounds.getRight());
@@ -62,6 +77,11 @@ public class Ship extends BaseShip {
             setLeft(worldBounds.getLeft());
             stop();
         }
+    }
+
+    private void shoot() {
+        Bullet bullet = bulletPool.obtain();
+        bullet.set(bulletRegion, pos, bulletV, bulletHeight, worldBounds);
     }
 
     @Override
@@ -74,7 +94,8 @@ public class Ship extends BaseShip {
     @Override
     public void destroy() {
         super.destroy();
-        boom(explosionShip);
+        boom(Explosion.Type.SHIP);
+        explosionSound.play();
     }
 
     public boolean keyDown(int keycode) {
@@ -158,10 +179,6 @@ public class Ship extends BaseShip {
         return super.touchUp(touch, pointer);
     }
 
-    public void boom(ExplosionShip explosionShip){
-        explosionShip.set(getHeight(),pos);
-    }
-
     private void moveRight(){
         v.set(v0);
     }
@@ -176,5 +193,10 @@ public class Ship extends BaseShip {
 
     public void setBlocked(boolean blocked) {
         isBlocked = blocked;
+    }
+
+    public void dispose() {
+        shootSound.dispose();
+        explosionSound.dispose();
     }
 }
